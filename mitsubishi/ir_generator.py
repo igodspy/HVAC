@@ -24,6 +24,7 @@ from .const import (
     HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
     OPTION_ON,
+    PAR_3D_AUTO,
     PAR_CLEANING,
     PAR_ECONOMY,
     PAR_FAN_MODE,
@@ -136,6 +137,8 @@ def _build_state(config):
     state[7] = (temperature - TEMP_MIN) & 0x0F
     state[9] = fan & 0x0F
     state[11] = (swing & 0x07) << 5
+    if config.get(PAR_3D_AUTO) == OPTION_ON:
+        state[11] |= 0x12
     state[13] = hswing & 0x0F
 
     if config.get(PAR_SLEEP) == OPTION_ON:

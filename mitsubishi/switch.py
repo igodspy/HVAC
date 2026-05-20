@@ -14,6 +14,7 @@ from .const import (
     OPTION_OFF,
     OPTION_ON,
     PAR_CLEANING,
+    PAR_3D_AUTO,
     PAR_ECONOMY,
     PAR_HVAC_MODE,
     PAR_POWERFUL,
@@ -35,6 +36,7 @@ OPTION_SWITCHES = {
     PAR_CLEANING: ("Cleaning", "mdi:spray-bottle"),
     PAR_POWERFUL: ("Powerful", "mdi:flash"),
     PAR_ECONOMY: ("Economy", "mdi:leaf"),
+    PAR_3D_AUTO: ("3D Auto", "mdi:axis-arrow"),
 }
 
 

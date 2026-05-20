@@ -80,6 +80,9 @@
       },
       "economy": {
         "name": "Economy"
+      },
+      "3d_auto": {
+        "name": "3D Auto"
       }
     }
   },
@@ -115,6 +118,9 @@
         },
         "economy": {
           "name": "Economy"
+        },
+        "3d_auto": {
+          "name": "3D Auto"
         }
       }
     }

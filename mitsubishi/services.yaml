@@ -83,3 +83,11 @@ set_options:
           options:
             - "off"
             - "on"
+    3d_auto:
+      name: 3D Auto
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"

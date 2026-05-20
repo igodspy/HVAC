@@ -32,6 +32,7 @@ from .const import (
     PAR_CLEANING,
     PAR_POWERFUL,
     PAR_ECONOMY,
+    PAR_3D_AUTO,
     OPTION_PARAMETERS,
     OPTION_OFF,
     OPTION_ON,
@@ -91,7 +92,7 @@ def _normalize_option_data(config_data, changed_data=None):
 
     enabled_regular_options = [
         parameter
-        for parameter in [PAR_QUIET, PAR_POWERFUL, PAR_ECONOMY]
+        for parameter in [PAR_QUIET, PAR_POWERFUL, PAR_ECONOMY, PAR_3D_AUTO]
         if changed_data.get(parameter) == OPTION_ON
     ]
     if enabled_regular_options:
@@ -103,6 +104,17 @@ def _normalize_option_data(config_data, changed_data=None):
         config_data[PAR_QUIET] = OPTION_OFF
     if changed_data.get(PAR_ECONOMY) == OPTION_ON or changed_data.get(PAR_QUIET) == OPTION_ON:
         config_data[PAR_POWERFUL] = OPTION_OFF
+    if changed_data.get(PAR_3D_AUTO) == OPTION_ON:
+        config_data[PAR_SWING_MODE] = "auto"
+        config_data[PAR_HSWING_MODE] = "auto"
+    if (
+        config_data.get(PAR_3D_AUTO) == OPTION_ON
+        and (
+            config_data.get(PAR_SWING_MODE) != "auto"
+            or config_data.get(PAR_HSWING_MODE) != "auto"
+        )
+    ):
+        config_data[PAR_3D_AUTO] = OPTION_OFF
 
     standalone_enabled = any(config_data.get(parameter) == OPTION_ON for parameter in STANDALONE_OPTION_PARAMETERS)
     if standalone_enabled:
@@ -147,6 +159,7 @@ SET_OPTIONS_SCHEMA = vol.Schema(
         vol.Optional(PAR_CLEANING): vol.In(SUPPORTED_OPTION_VALUES),
         vol.Optional(PAR_POWERFUL): vol.In(SUPPORTED_OPTION_VALUES),
         vol.Optional(PAR_ECONOMY): vol.In(SUPPORTED_OPTION_VALUES),
+        vol.Optional(PAR_3D_AUTO): vol.In(SUPPORTED_OPTION_VALUES),
     }
 )
 
@@ -235,6 +248,7 @@ class MitsubishiHandler():
                 PAR_CLEANING,
                 PAR_POWERFUL,
                 PAR_ECONOMY,
+                PAR_3D_AUTO,
             ]:
                 if parameter in read_data and read_data[parameter] in SUPPORTED_OPTION_VALUES:
                     self._config_data[parameter] = copy.deepcopy(read_data[parameter])

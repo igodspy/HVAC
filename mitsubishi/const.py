@@ -114,6 +114,7 @@ PAR_PURIFIER = "purifier"
 PAR_CLEANING = "cleaning"
 PAR_POWERFUL = "powerful"
 PAR_ECONOMY = "economy"
+PAR_3D_AUTO = "3d_auto"
 
 OPTION_PARAMETERS = [
     PAR_SWING_MODE,
@@ -124,6 +125,7 @@ OPTION_PARAMETERS = [
     PAR_CLEANING,
     PAR_POWERFUL,
     PAR_ECONOMY,
+    PAR_3D_AUTO,
 ]
 
 TEMP_MIN = 18
