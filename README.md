@@ -21,10 +21,12 @@ mitsubishi:
 - Temperature: 18-30 C.
 - Fan: auto, lowest, low, medium, high, highest.
 - Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
-- Presets: quiet, sleep, purifier, cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
+- Presets: quiet, sleep, Allergen Clear (`purifier`), cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
-- Individual option switches: quiet, sleep, purifier, cleaning, powerful, economy.
+- Individual option switches: quiet, sleep, Allergen Clear, cleaning, powerful, economy.
+- Allergen Clear turns off locally after 90 minutes. Self cleaning turns off locally after 2 hours. These timer-based state updates do not send an IR command.
+- In case of SCM multi system, ALLERGEN CLEAR control function is invalid. In case of SCM multi system, if ALLERGEN button is pressed by mistake, the indoor unit which received such command stops.
 
 Horizontal swing and individual options are exposed as Home Assistant entities:
 - `select.<name>_horizontal_swing`
@@ -78,7 +80,7 @@ cards:
       - entity: switch.livingroom_cond_quiet
         name: Silent
       - entity: switch.livingroom_cond_purifier
-        name: Air purifier
+        name: Allergen Clear
       - entity: switch.livingroom_cond_sleep
         name: Night Setback
       - entity: switch.livingroom_cond_cleaning

@@ -52,7 +52,7 @@ set_options:
             - "off"
             - "on"
     purifier:
-      name: Purifier
+      name: Allergen Clear
       required: false
       selector:
         select:

@@ -1,4 +1,5 @@
 """Suppoort for Mitsubishi."""
+from datetime import datetime, timedelta
 import logging
 import threading
 import voluptuous as vol
@@ -29,7 +30,9 @@ from .const import (
     PAR_QUIET,
     PAR_SLEEP,
     PAR_PURIFIER,
+    PAR_PURIFIER_ENDS_AT,
     PAR_CLEANING,
+    PAR_CLEANING_ENDS_AT,
     PAR_POWERFUL,
     PAR_ECONOMY,
     PAR_3D_AUTO,
@@ -76,6 +79,39 @@ DEFAULT_FAN_MODE = FAN_AUTO
 DEFAULT_SWING_MODE = "off"
 DEFAULT_HSWING_MODE = "auto"
 HVAC_MODES_WITHOUT_3D_AUTO = [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
+CLEANING_DURATION = timedelta(hours=2)
+PURIFIER_DURATION = timedelta(minutes=90)
+
+
+def _parse_json_datetime(value):
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _serialize_json_datetime(value):
+    return value.replace(microsecond=0).isoformat()
+
+
+def _sync_timed_option(config_data, option_parameter, end_parameter, duration):
+    ends_at = _parse_json_datetime(config_data.get(end_parameter))
+    if config_data.get(option_parameter) == OPTION_ON:
+        if ends_at is None:
+            config_data[end_parameter] = _serialize_json_datetime(
+                datetime.now() + duration
+            )
+            return True
+        if datetime.now() >= ends_at:
+            config_data[option_parameter] = OPTION_OFF
+            config_data[PAR_HVAC_MODE] = HVAC_MODE_OFF
+            config_data.pop(end_parameter, None)
+            return True
+    elif config_data.pop(end_parameter, None) is not None:
+        return True
+    return False
 
 
 def _normalize_option_data(config_data, changed_data=None):
@@ -261,10 +297,35 @@ class MitsubishiHandler():
                     self._config_data[parameter] = OPTION_OFF
                     must_reset = True
 
+            for parameter in [PAR_PURIFIER_ENDS_AT, PAR_CLEANING_ENDS_AT]:
+                if parameter in read_data:
+                    self._config_data[parameter] = copy.deepcopy(read_data[parameter])
+                else:
+                    self._config_data.pop(parameter, None)
+
             original_config_data = copy.deepcopy(self._config_data)
             _normalize_option_data(self._config_data)
             if self._config_data != original_config_data:
                 must_reset = True
+
+            must_reset = (
+                _sync_timed_option(
+                    self._config_data,
+                    PAR_PURIFIER,
+                    PAR_PURIFIER_ENDS_AT,
+                    PURIFIER_DURATION,
+                )
+                or must_reset
+            )
+            must_reset = (
+                _sync_timed_option(
+                    self._config_data,
+                    PAR_CLEANING,
+                    PAR_CLEANING_ENDS_AT,
+                    CLEANING_DURATION,
+                )
+                or must_reset
+            )
 
         except:
             self._config_data[PAR_HVAC_MODE] = DEFAULT_HVAC_MODE
@@ -275,6 +336,8 @@ class MitsubishiHandler():
             for parameter in OPTION_PARAMETERS:
                 if parameter not in [PAR_SWING_MODE, PAR_HSWING_MODE]:
                     self._config_data[parameter] = OPTION_OFF
+            self._config_data.pop(PAR_PURIFIER_ENDS_AT, None)
+            self._config_data.pop(PAR_CLEANING_ENDS_AT, None)
             must_reset = True
             pass
         return must_reset
@@ -327,6 +390,10 @@ class MitsubishiHandler():
                     ):
                         hvac_mode = HVAC_MODE_COOL
                     self._config_data[PAR_HVAC_MODE] = copy.deepcopy(hvac_mode)
+                    self._config_data[PAR_PURIFIER] = OPTION_OFF
+                    self._config_data.pop(PAR_PURIFIER_ENDS_AT, None)
+                    self._config_data[PAR_CLEANING] = OPTION_OFF
+                    self._config_data.pop(PAR_CLEANING_ENDS_AT, None)
             if PAR_FAN_MODE in parameter_list:
                 fan_mode = normalize_fan_mode(parameter_list[PAR_FAN_MODE])
                 if fan_mode in SUPPORTED_FAN_MODES:
@@ -343,6 +410,24 @@ class MitsubishiHandler():
                         self._config_data[parameter] = copy.deepcopy(parameter_list[parameter])
 
             _normalize_option_data(self._config_data, parameter_list)
+
+            if parameter_list.get(PAR_PURIFIER) == OPTION_ON:
+                self._config_data[PAR_PURIFIER_ENDS_AT] = _serialize_json_datetime(
+                    datetime.now() + PURIFIER_DURATION
+                )
+            elif self._config_data.get(PAR_PURIFIER) != OPTION_ON:
+                self._config_data.pop(PAR_PURIFIER_ENDS_AT, None)
+            if parameter_list.get(PAR_CLEANING) == OPTION_ON:
+                self._config_data[PAR_CLEANING_ENDS_AT] = _serialize_json_datetime(
+                    datetime.now() + CLEANING_DURATION
+                )
+            elif self._config_data.get(PAR_CLEANING) != OPTION_ON:
+                self._config_data.pop(PAR_CLEANING_ENDS_AT, None)
+            if PAR_HVAC_MODE in parameter_list:
+                self._config_data[PAR_PURIFIER] = OPTION_OFF
+                self._config_data.pop(PAR_PURIFIER_ENDS_AT, None)
+                self._config_data[PAR_CLEANING] = OPTION_OFF
+                self._config_data.pop(PAR_CLEANING_ENDS_AT, None)
 
             try:
                 ir_code = generate_broadlink_base64(self._config_data)

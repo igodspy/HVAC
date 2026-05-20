@@ -32,7 +32,7 @@ SCAN_INTERVAL = timedelta(seconds=STATE_SCAN_INTERVAL_SECS)
 OPTION_SWITCHES = {
     PAR_QUIET: ("Silent", "mdi:volume-low"),
     PAR_SLEEP: ("Night Setback", "mdi:sleep"),
-    PAR_PURIFIER: ("Purifier", "mdi:air-purifier"),
+    PAR_PURIFIER: ("Allergen Clear", "mdi:allergy"),
     PAR_CLEANING: ("Cleaning", "mdi:spray-bottle"),
     PAR_POWERFUL: ("Powerful", "mdi:flash"),
     PAR_ECONOMY: ("Economy", "mdi:leaf"),
