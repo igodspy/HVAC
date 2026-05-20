@@ -245,7 +245,7 @@ class MitsubishiHandler():
         self._remote_entity = remote_entity
         self._temperature_entity = temperature
         self._humidity_entity = humidity
-        self._option_entities = []
+        self._entities = []
 
     @property
     def available(self):
@@ -416,16 +416,32 @@ class MitsubishiHandler():
             False,
         )
 
+    def register_entity(self, entity):
+        """Track entities for immediate state refreshes."""
+        self._entities.append(entity)
+
     def register_option_entity(self, entity):
         """Track option entities for immediate state refreshes."""
-        self._option_entities.append(entity)
+        self.register_entity(entity)
 
-    def refresh_option_entities(self):
-        """Request Home Assistant state updates for option entities."""
-        for entity in self._option_entities:
+    def refresh_entities(self):
+        """Request Home Assistant state updates for all related entities."""
+        for entity in self._entities:
+            if hasattr(entity, "_state_refresh"):
+                entity._state_refresh = _serialize_json_datetime(datetime.now())
             refresh_state = getattr(entity, "_refresh_state", None)
             if refresh_state is not None:
                 refresh_state()
+                continue
+            write_state = getattr(entity, "async_write_ha_state", None)
+            if write_state is not None:
+                self._hass.add_job(write_state)
+            update_state = getattr(entity, "schedule_update_ha_state", None)
+            if update_state is not None:
+                try:
+                    update_state(force_refresh=True)
+                except TypeError:
+                    update_state()
 
     def set_data_json(self, parameter_list=None, send_ir=True):
         """Set Mitsubishi data in json file"""
@@ -542,7 +558,7 @@ class MitsubishiHandler():
             except Exception as ex:
                 _LOGGER.error(f"Unknown IR code with exception: {ex}")
 
-        self.refresh_option_entities()
+        self.refresh_entities()
 
         if should_send:
             try:

@@ -92,21 +92,6 @@ class MitsubishiPowerSwitch(SwitchEntity):
     @property
     def available(self):
         """Return True if entity is available."""
-        try:
-            self._api.read_data_json()
-            if (
-                self._parameter == PAR_ECONOMY
-                and self._api._config_data[PAR_HVAC_MODE] == HVAC_MODE_FAN_ONLY
-            ):
-                return False
-            if (
-                self._parameter == PAR_POWERFUL
-                and self._api._config_data[PAR_HVAC_MODE]
-                in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
-            ):
-                return False
-        except Exception as ex:
-            _LOGGER.error("Failed to read %s availability: %s", self._parameter, ex)
         return self._api.available
 
     @property
@@ -183,21 +168,6 @@ class MitsubishiOptionSwitch(SwitchEntity):
     @property
     def available(self):
         """Return True if entity is available."""
-        try:
-            self._api.read_data_json()
-            if (
-                self._parameter == PAR_ECONOMY
-                and self._api._config_data[PAR_HVAC_MODE] == HVAC_MODE_FAN_ONLY
-            ):
-                return False
-            if (
-                self._parameter == PAR_POWERFUL
-                and self._api._config_data[PAR_HVAC_MODE]
-                in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
-            ):
-                return False
-        except Exception as ex:
-            _LOGGER.error("Failed to read %s availability: %s", self._parameter, ex)
         return self._api.available
 
     @property
@@ -211,6 +181,11 @@ class MitsubishiOptionSwitch(SwitchEntity):
         if self._state_refresh is None:
             return None
         return {"state_refresh": self._state_refresh}
+
+    @property
+    def device_state_attributes(self):
+        """Return extra state attributes for older Home Assistant versions."""
+        return self.extra_state_attributes
 
     @property
     def is_on(self):
@@ -264,6 +239,15 @@ class MitsubishiOptionSwitch(SwitchEntity):
         self._api.set_data_json({self._parameter: OPTION_OFF}, send_ir=False)
         self._refresh_state()
 
+    async def _async_reject_turn_on(self):
+        self._state_refresh = datetime.now().isoformat()
+        self._api.set_data_json({self._parameter: OPTION_OFF}, send_ir=False)
+        update_state = getattr(self, "async_update_ha_state", None)
+        if update_state is not None:
+            await update_state(force_refresh=True)
+        else:
+            self.async_write_ha_state()
+
     def turn_on(self, **kwargs):
         """Enable the option."""
         if self._is_unsupported_turn_on():
@@ -274,9 +258,7 @@ class MitsubishiOptionSwitch(SwitchEntity):
     async def async_turn_on(self, **kwargs):
         """Enable the option."""
         if self._is_unsupported_turn_on():
-            self._state_refresh = datetime.now().isoformat()
-            self._api.set_data_json({self._parameter: OPTION_OFF}, send_ir=False)
-            self.async_write_ha_state()
+            await self._async_reject_turn_on()
             return
         self._api.set_data_json({self._parameter: OPTION_ON})
         self.async_write_ha_state()

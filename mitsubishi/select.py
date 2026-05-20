@@ -40,6 +40,7 @@ class MitsubishiHorizontalSwingSelect(SelectEntity):
         self._attr_has_entity_name = True
         self._attr_name = None
         self._attr_translation_key = PAR_HSWING_MODE
+        self._api.register_entity(self)
 
     @property
     def unique_id(self) -> str:

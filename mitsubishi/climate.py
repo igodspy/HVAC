@@ -86,6 +86,8 @@ class MitsubishiThermostat(ClimateEntity):
         self._name = name
         self._api = device.api
         self._attr_translation_key = "aircon"
+        self._state_refresh = None
+        self._api.register_entity(self)
 
     @property
     def icon(self):
@@ -106,6 +108,29 @@ class MitsubishiThermostat(ClimateEntity):
     def should_poll(self):
         """Polling is required."""
         return True
+
+    @property
+    def extra_state_attributes(self):
+        """Return extra state attributes."""
+        if self._state_refresh is None:
+            return None
+        return {"state_refresh": self._state_refresh}
+
+    @property
+    def device_state_attributes(self):
+        """Return extra state attributes for older Home Assistant versions."""
+        return self.extra_state_attributes
+
+    def _refresh_state(self):
+        write_state = getattr(self, "async_write_ha_state", None)
+        if write_state is not None:
+            self._api._hass.add_job(write_state)
+        update_state = getattr(self, "schedule_update_ha_state", None)
+        if update_state is not None:
+            try:
+                update_state(force_refresh=True)
+            except TypeError:
+                update_state()
 
     @property
     def min_temp(self):
@@ -297,6 +322,11 @@ class MitsubishiThermostat(ClimateEntity):
             if preset_mode != PRESET_NONE:
                 preset_data[preset_mode] = "on"
             self._api.set_data_json(preset_data)
+            self._refresh_state()
+
+    async def async_set_preset_mode(self, preset_mode):
+        """Set one extra mode as the active climate preset."""
+        self.set_preset_mode(preset_mode)
 
     def set_temperature(self, **kwargs):
         """Set new target temperature."""
