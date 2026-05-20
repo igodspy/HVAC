@@ -115,6 +115,7 @@ PAR_PURIFIER_ENDS_AT = "purifier_ends_at"
 PAR_CLEANING = "cleaning"
 PAR_CLEANING_ENDS_AT = "cleaning_ends_at"
 PAR_POWERFUL = "powerful"
+PAR_POWERFUL_ENDS_AT = "powerful_ends_at"
 PAR_ECONOMY = "economy"
 PAR_3D_AUTO = "3d_auto"
 
