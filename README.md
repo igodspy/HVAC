@@ -20,13 +20,15 @@ mitsubishi:
 - HVAC mode: off, heat, cool, dry, fan only, auto.
 - Temperature: 18-30 C.
 - Fan: auto, lowest, low, medium, high, highest.
-- Vertical swing: off, auto, 90, 60, 45, 30, 0.
+- Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
 - Presets: quiet, sleep, purifier, cleaning, powerful, economy.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
+- Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, purifier, cleaning, powerful, economy.
 
 Horizontal swing and individual options are exposed as Home Assistant entities:
 - `select.<name>_horizontal_swing`
+- `switch.<name>_power`
 - `switch.<name>_quiet`
 - `switch.<name>_sleep`
 - `switch.<name>_purifier`
@@ -35,6 +37,11 @@ Horizontal swing and individual options are exposed as Home Assistant entities:
 - `switch.<name>_economy`
 
 The `mitsubishi.set_options` service is still available for existing automations.
+
+### Yandex Smart Home mode mapping
+Home Assistant keeps the full set of Mitsubishi controls. For Yandex Smart Home, map unsupported values in `entity_config` so Yandex receives only common mode names and does not show fallback labels like numbers.
+
+See `yandex_smart_home.example.yaml` for a ready example. Replace `climate.livingroom_cond` with your climate entity ID.
 
 ### Lovelace card example
 ```
@@ -55,6 +62,9 @@ cards:
         type: climate-preset-modes
       - type: climate-hvac-modes
     entities:
+      - entity: switch.livingroom_cond_power
+        name: Power
+        icon: mdi:power
       - entity: select.livingroom_cond_horizontal_swing
         name: Horizontal swing
         icon: mdi:arrow-left-right
@@ -71,12 +81,10 @@ cards:
         name: Self cleaning
         icon: mdi:spray-bottle
 ```
-
 ### Configuration saving possible issues
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
 It might happen that due to not found folder `json` configuration shall not be saved. To solve it, simply create `json` folder under `/config/custom_components/mitsubishi` and set rights for everyone to be able to modify contents of this folder. After first request to change data files with corresponding friendly names shall be created.
 Examples of JSON files are included in `json` folder in this repository.
-
 
 ### configuration.yaml entry example
 ```
