@@ -9,10 +9,13 @@ from .const import (
     DATA_MITSUBISHI,
     DEVICES,
     DOMAIN,
+    HVAC_MODE_COOL,
+    HVAC_MODE_OFF,
     OPTION_OFF,
     OPTION_ON,
     PAR_CLEANING,
     PAR_ECONOMY,
+    PAR_HVAC_MODE,
     PAR_POWERFUL,
     PAR_PURIFIER,
     PAR_QUIET,
@@ -43,11 +46,76 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     device = hass.data[DATA_MITSUBISHI][DEVICES][name]
 
     add_entities(
-        [
+        [MitsubishiPowerSwitch(name, device)]
+        + [
             MitsubishiOptionSwitch(name, device, parameter, icon)
             for parameter, (_, icon) in OPTION_SWITCHES.items()
         ]
     )
+
+
+class MitsubishiPowerSwitch(SwitchEntity):
+    """Main power switch for a Mitsubishi AC."""
+
+    def __init__(self, name, device):
+        """Initialize the power switch entity."""
+        self._name = name
+        self._api = device.api
+        self._attr_has_entity_name = True
+        self._attr_name = None
+        self._attr_translation_key = "power"
+
+    @property
+    def unique_id(self) -> str:
+        """Return the unique ID for this switch."""
+        return "_".join([self._name, "power"])
+
+    @property
+    def device_info(self):
+        """Return device information for this switch."""
+        return {
+            "identifiers": {(DOMAIN, self._name)},
+            "manufacturer": "Mitsubishi Heavy Industries",
+            "model": "RLA502A700B",
+            "name": self._name,
+        }
+
+    @property
+    def icon(self):
+        """Return the icon for this switch."""
+        return "mdi:power"
+
+    @property
+    def available(self):
+        """Return True if entity is available."""
+        return self._api.available
+
+    @property
+    def should_poll(self):
+        """Polling is required."""
+        return True
+
+    @property
+    def is_on(self):
+        """Return True when the AC is not off."""
+        try:
+            self._api.read_data_json()
+            return self._api._config_data[PAR_HVAC_MODE] != HVAC_MODE_OFF
+        except Exception as ex:
+            _LOGGER.error("Failed to read power state: %s", ex)
+        return False
+
+    def turn_on(self, **kwargs):
+        """Turn on the AC in Cool mode."""
+        self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_COOL})
+
+    def turn_off(self, **kwargs):
+        """Turn off the AC."""
+        self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_OFF})
+
+    def update(self):
+        """Update entity state."""
+        return
 
 
 class MitsubishiOptionSwitch(SwitchEntity):

@@ -250,6 +250,14 @@ class MitsubishiThermostat(ClimateEntity):
         """Set new target hvac mode."""
         if hvac_mode in SUPPORTED_HVAC_MODES:
             self._api.set_data_json({PAR_HVAC_MODE: hvac_mode})
+
+    def turn_on(self):
+        """Turn on the AC in Cool mode."""
+        self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_COOL})
+
+    def turn_off(self):
+        """Turn off the AC."""
+        self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_OFF})
             
     def set_fan_mode(self, fan_mode):
         """Set new target fan mode."""

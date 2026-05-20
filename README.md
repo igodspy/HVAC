@@ -23,10 +23,12 @@ mitsubishi:
 - Vertical swing: off, auto, 90, 60, 45, 30, 0.
 - Presets: quiet, sleep, purifier, cleaning, powerful, economy.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
+- Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, purifier, cleaning, powerful, economy.
 
 Horizontal swing and individual options are exposed as Home Assistant entities:
 - `select.<name>_horizontal_swing`
+- `switch.<name>_power`
 - `switch.<name>_quiet`
 - `switch.<name>_sleep`
 - `switch.<name>_purifier`
@@ -55,6 +57,9 @@ cards:
         type: climate-preset-modes
       - type: climate-hvac-modes
     entities:
+      - entity: switch.livingroom_cond_power
+        name: Power
+        icon: mdi:power
       - entity: select.livingroom_cond_horizontal_swing
         name: Horizontal swing
         icon: mdi:arrow-left-right
@@ -75,7 +80,6 @@ cards:
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
 It might happen that due to not found folder `json` configuration shall not be saved. To solve it, simply create `json` folder under `/config/custom_components/mitsubishi` and set rights for everyone to be able to modify contents of this folder. After first request to change data files with corresponding friendly names shall be created.
 Examples of JSON files are included in `json` folder in this repository.
-```
 
 ### configuration.yaml entry example
 ```
