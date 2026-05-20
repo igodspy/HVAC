@@ -51,9 +51,6 @@ cards:
   - type: thermostat
     entity: climate.livingroom_cond
     name: Living Room
-
-  - type: entities
-    title: Air conditioner options
     features:
       - style: dropdown
         type: climate-swing-modes
@@ -61,25 +58,32 @@ cards:
         type: climate-fan-modes
       - style: icons
         type: climate-preset-modes
-      - type: climate-hvac-modes
+      - style: icons
+        type: climate-hvac-modes
+        hvac_modes:
+          - "off"
+          - cool
+          - heat
+          - dry
+          - fan_only
+          - heat_cool
+    show_current_as_primary: false
+  - type: entities
+    title: Air conditioner options
     entities:
       - entity: select.livingroom_cond_horizontal_swing
         name: Horizontal swing
-        icon: mdi:arrow-left-right
       - entity: switch.mitsubishi_livingroom_cond_3d_auto
         name: 3D auto
       - entity: switch.livingroom_cond_quiet
         name: Silent
-        icon: mdi:volume-low
       - entity: switch.livingroom_cond_purifier
         name: Air purifier
-        icon: mdi:air-purifier
       - entity: switch.livingroom_cond_sleep
         name: Night Setback
-        icon: mdi:sleep
       - entity: switch.livingroom_cond_cleaning
         name: Self cleaning
-        icon: mdi:spray-bottle
+    show_header_toggle: false
 ```
 
 ### Configuration saving possible issues
