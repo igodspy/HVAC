@@ -21,7 +21,7 @@ mitsubishi:
 - Temperature: 18-30 C.
 - Fan: auto, lowest, low, medium, high, highest.
 - Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
-- Presets: quiet, sleep, purifier, cleaning, powerful, economy, 3D auto.
+- Presets: quiet, sleep, purifier, cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, purifier, cleaning, powerful, economy.

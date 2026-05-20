@@ -137,7 +137,10 @@ def _build_state(config):
     state[7] = (temperature - TEMP_MIN) & 0x0F
     state[9] = fan & 0x0F
     state[11] = (swing & 0x07) << 5
-    if config.get(PAR_3D_AUTO) == OPTION_ON:
+    if (
+        config.get(PAR_3D_AUTO) == OPTION_ON
+        and mode not in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
+    ):
         state[11] |= 0x12
     state[13] = hswing & 0x0F
 

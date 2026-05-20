@@ -38,6 +38,8 @@ from .const import (
     OPTION_ON,
     STANDALONE_OPTION_PARAMETERS,
     HVAC_MODE_COOL,
+    HVAC_MODE_DRY,
+    HVAC_MODE_FAN_ONLY,
     HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
     REMOTE_ENTITY,
@@ -73,6 +75,7 @@ DEFAULT_HVAC_MODE = HVAC_MODE_OFF
 DEFAULT_FAN_MODE = FAN_AUTO
 DEFAULT_SWING_MODE = "off"
 DEFAULT_HSWING_MODE = "auto"
+HVAC_MODES_WITHOUT_3D_AUTO = [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
 
 
 def _normalize_option_data(config_data, changed_data=None):
@@ -107,6 +110,8 @@ def _normalize_option_data(config_data, changed_data=None):
     if changed_data.get(PAR_3D_AUTO) == OPTION_ON:
         config_data[PAR_SWING_MODE] = "auto"
         config_data[PAR_HSWING_MODE] = "auto"
+    if config_data.get(PAR_HVAC_MODE) in HVAC_MODES_WITHOUT_3D_AUTO:
+        config_data[PAR_3D_AUTO] = OPTION_OFF
     if (
         config_data.get(PAR_3D_AUTO) == OPTION_ON
         and (
