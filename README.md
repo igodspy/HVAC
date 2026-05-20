@@ -75,6 +75,7 @@ cards:
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
 It might happen that due to not found folder `json` configuration shall not be saved. To solve it, simply create `json` folder under `/config/custom_components/mitsubishi` and set rights for everyone to be able to modify contents of this folder. After first request to change data files with corresponding friendly names shall be created.
 Examples of JSON files are included in `json` folder in this repository.
+```
 
 ### configuration.yaml entry example
 ```
