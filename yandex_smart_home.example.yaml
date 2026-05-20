@@ -1,0 +1,18 @@
+yandex_smart_home:
+  entity_config:
+    climate.livingroom_cond:
+      modes:
+        fan_speed:
+          auto: ["auto"]
+          low: ["low", "lowest"]
+          medium: ["medium"]
+          high: ["high"]
+          turbo: ["highest"]
+        swing:
+          auto: ["auto"]
+          stationary: ["off"]
+          high: ["high", "highest"]
+          low: ["low", "lowest"]
+        program:
+          turbo: ["powerful"]
+          eco: ["economy"]
