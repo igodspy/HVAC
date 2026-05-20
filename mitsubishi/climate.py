@@ -41,6 +41,9 @@ from .const import (
     SUPPORTED_FAN_MODES,
     SUPPORTED_SWING_MODES,
     SUPPORTED_PRESET_MODES,
+    normalize_hvac_mode,
+    normalize_fan_mode,
+    normalize_swing_mode,
     PRESET_NONE,
     ATTR_TEMPERATURE,
     CONF_NAME,
@@ -248,24 +251,39 @@ class MitsubishiThermostat(ClimateEntity):
         
     def set_hvac_mode(self, hvac_mode):
         """Set new target hvac mode."""
+        hvac_mode = normalize_hvac_mode(hvac_mode)
         if hvac_mode in SUPPORTED_HVAC_MODES:
             self._api.set_data_json({PAR_HVAC_MODE: hvac_mode})
 
-    def turn_on(self):
+    async def async_set_hvac_mode(self, hvac_mode):
+        """Set new target hvac mode."""
+        self.set_hvac_mode(hvac_mode)
+
+    def turn_on(self, **kwargs):
         """Turn on the AC in Cool mode."""
         self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_COOL})
 
-    def turn_off(self):
+    async def async_turn_on(self, **kwargs):
+        """Turn on the AC in Cool mode."""
+        self.turn_on(**kwargs)
+
+    def turn_off(self, **kwargs):
         """Turn off the AC."""
         self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_OFF})
+
+    async def async_turn_off(self, **kwargs):
+        """Turn off the AC."""
+        self.turn_off(**kwargs)
             
     def set_fan_mode(self, fan_mode):
         """Set new target fan mode."""
+        fan_mode = normalize_fan_mode(fan_mode)
         if fan_mode in SUPPORTED_FAN_MODES:
             self._api.set_data_json({PAR_FAN_MODE: fan_mode})
 
     def set_swing_mode(self, swing_mode):
         """Set new vertical swing mode."""
+        swing_mode = normalize_swing_mode(swing_mode)
         if swing_mode in SUPPORTED_SWING_MODES:
             self._api.set_data_json({PAR_SWING_MODE: swing_mode})
 

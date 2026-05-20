@@ -109,9 +109,17 @@ class MitsubishiPowerSwitch(SwitchEntity):
         """Turn on the AC in Cool mode."""
         self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_COOL})
 
+    async def async_turn_on(self, **kwargs):
+        """Turn on the AC in Cool mode."""
+        self.turn_on(**kwargs)
+
     def turn_off(self, **kwargs):
         """Turn off the AC."""
         self._api.set_data_json({PAR_HVAC_MODE: HVAC_MODE_OFF})
+
+    async def async_turn_off(self, **kwargs):
+        """Turn off the AC."""
+        self.turn_off(**kwargs)
 
     def update(self):
         """Update entity state."""

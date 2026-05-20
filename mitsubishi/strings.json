@@ -3,6 +3,16 @@
     "climate": {
       "aircon": {
         "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "Off",
+              "heat_cool": "Auto",
+              "cool": "Cool",
+              "dry": "Dry",
+              "fan_only": "Fan",
+              "heat": "Heat"
+            }
+          },
           "fan_mode": {
             "state": {
               "auto": "Auto",
@@ -11,6 +21,17 @@
               "medium": "Medium",
               "high": "High",
               "highest": "Highest"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "off": "Off",
+              "auto": "Auto",
+              "highest": "Highest",
+              "high": "High",
+              "middle": "Middle",
+              "low": "Low",
+              "lowest": "Lowest"
             }
           },
           "preset_mode": {
@@ -70,6 +91,9 @@
         "name": {
           "name": "Name",
           "description": "Climate device name from configuration.yaml."
+        },
+        "swing_mode": {
+          "name": "Vertical swing"
         },
         "hswing_mode": {
           "name": "Horizontal swing"

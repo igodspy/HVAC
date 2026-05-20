@@ -36,6 +36,8 @@ from .const import (
     OPTION_OFF,
     OPTION_ON,
     STANDALONE_OPTION_PARAMETERS,
+    HVAC_MODE_COOL,
+    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
     REMOTE_ENTITY,
     FAN_AUTO,
@@ -48,6 +50,10 @@ from .const import (
     SUPPORTED_OPTION_VALUES,
     TEMP_MIN,
     TEMP_MAX,
+    SWING_MODE_ALIASES,
+    normalize_hvac_mode,
+    normalize_fan_mode,
+    normalize_swing_mode,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -131,7 +137,9 @@ CONFIG_SCHEMA = vol.Schema(
 SET_OPTIONS_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_NAME): cv.string,
-        vol.Optional(PAR_SWING_MODE): vol.In(SUPPORTED_SWING_MODES),
+        vol.Optional(PAR_SWING_MODE): vol.In(
+            SUPPORTED_SWING_MODES + list(SWING_MODE_ALIASES)
+        ),
         vol.Optional(PAR_HSWING_MODE): vol.In(SUPPORTED_HSWING_MODES),
         vol.Optional(PAR_QUIET): vol.In(SUPPORTED_OPTION_VALUES),
         vol.Optional(PAR_SLEEP): vol.In(SUPPORTED_OPTION_VALUES),
@@ -172,8 +180,9 @@ class MitsubishiHandler():
                 read_data = json.load(json_file)
 
             if PAR_HVAC_MODE in read_data:
-                if read_data[PAR_HVAC_MODE] in SUPPORTED_HVAC_MODES:
-                    self._config_data[PAR_HVAC_MODE] = copy.deepcopy(read_data[PAR_HVAC_MODE])
+                hvac_mode = normalize_hvac_mode(read_data[PAR_HVAC_MODE])
+                if hvac_mode in SUPPORTED_HVAC_MODES:
+                    self._config_data[PAR_HVAC_MODE] = copy.deepcopy(hvac_mode)
                 else:
                     self._config_data[PAR_HVAC_MODE] = DEFAULT_HVAC_MODE
                     must_reset = True
@@ -192,8 +201,9 @@ class MitsubishiHandler():
                 must_reset = True
 
             if PAR_FAN_MODE in read_data:
-                if read_data[PAR_FAN_MODE] in SUPPORTED_FAN_MODES:
-                    self._config_data[PAR_FAN_MODE] = copy.deepcopy(read_data[PAR_FAN_MODE])
+                fan_mode = normalize_fan_mode(read_data[PAR_FAN_MODE])
+                if fan_mode in SUPPORTED_FAN_MODES:
+                    self._config_data[PAR_FAN_MODE] = copy.deepcopy(fan_mode)
                 else:
                     self._config_data[PAR_FAN_MODE] = DEFAULT_FAN_MODE
                     must_reset = True
@@ -201,8 +211,13 @@ class MitsubishiHandler():
                 self._config_data[PAR_FAN_MODE] = DEFAULT_FAN_MODE
                 must_reset = True
 
-            if PAR_SWING_MODE in read_data and read_data[PAR_SWING_MODE] in SUPPORTED_SWING_MODES:
-                self._config_data[PAR_SWING_MODE] = copy.deepcopy(read_data[PAR_SWING_MODE])
+            if PAR_SWING_MODE in read_data:
+                swing_mode = normalize_swing_mode(read_data[PAR_SWING_MODE])
+                if swing_mode in SUPPORTED_SWING_MODES:
+                    self._config_data[PAR_SWING_MODE] = copy.deepcopy(swing_mode)
+                else:
+                    self._config_data[PAR_SWING_MODE] = DEFAULT_SWING_MODE
+                    must_reset = True
             else:
                 self._config_data[PAR_SWING_MODE] = DEFAULT_SWING_MODE
                 must_reset = True
@@ -285,14 +300,28 @@ class MitsubishiHandler():
         with self._lock:
             self._read_data_json()
             if PAR_HVAC_MODE in parameter_list:
-                self._config_data[PAR_HVAC_MODE] = copy.deepcopy(parameter_list[PAR_HVAC_MODE])
+                hvac_mode = normalize_hvac_mode(parameter_list[PAR_HVAC_MODE])
+                if hvac_mode in SUPPORTED_HVAC_MODES:
+                    if (
+                        self._config_data[PAR_HVAC_MODE] == HVAC_MODE_OFF
+                        and hvac_mode == HVAC_MODE_HEAT_COOL
+                    ):
+                        hvac_mode = HVAC_MODE_COOL
+                    self._config_data[PAR_HVAC_MODE] = copy.deepcopy(hvac_mode)
             if PAR_FAN_MODE in parameter_list:
-                self._config_data[PAR_FAN_MODE] = copy.deepcopy(parameter_list[PAR_FAN_MODE])
+                fan_mode = normalize_fan_mode(parameter_list[PAR_FAN_MODE])
+                if fan_mode in SUPPORTED_FAN_MODES:
+                    self._config_data[PAR_FAN_MODE] = copy.deepcopy(fan_mode)
             if PAR_TEMPERATURE in parameter_list:
                 self._config_data[PAR_TEMPERATURE] = copy.deepcopy(parameter_list[PAR_TEMPERATURE])
             for parameter in OPTION_PARAMETERS:
                 if parameter in parameter_list:
-                    self._config_data[parameter] = copy.deepcopy(parameter_list[parameter])
+                    if parameter == PAR_SWING_MODE:
+                        self._config_data[parameter] = copy.deepcopy(
+                            normalize_swing_mode(parameter_list[parameter])
+                        )
+                    else:
+                        self._config_data[parameter] = copy.deepcopy(parameter_list[parameter])
 
             _normalize_option_data(self._config_data, parameter_list)
 

@@ -61,10 +61,15 @@ FAN_MAP = {
 
 SWING_MAP = {
     "auto": 0,
+    "highest": 1,
     "90": 1,
+    "high": 2,
     "60": 2,
+    "middle": 3,
     "45": 3,
+    "low": 4,
     "30": 4,
+    "lowest": 5,
     "0": 5,
     "off": 6,
 }

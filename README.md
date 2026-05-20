@@ -20,7 +20,7 @@ mitsubishi:
 - HVAC mode: off, heat, cool, dry, fan only, auto.
 - Temperature: 18-30 C.
 - Fan: auto, lowest, low, medium, high, highest.
-- Vertical swing: off, auto, 90, 60, 45, 30, 0.
+- Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
 - Presets: quiet, sleep, purifier, cleaning, powerful, economy.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
@@ -37,6 +37,11 @@ Horizontal swing and individual options are exposed as Home Assistant entities:
 - `switch.<name>_economy`
 
 The `mitsubishi.set_options` service is still available for existing automations.
+
+### Yandex Smart Home mode mapping
+Home Assistant keeps the full set of Mitsubishi controls. For Yandex Smart Home, map unsupported values in `entity_config` so Yandex receives only common mode names and does not show fallback labels like numbers.
+
+See `yandex_smart_home.example.yaml` for a ready example. Replace `climate.livingroom_cond` with your climate entity ID.
 
 ### Lovelace card example
 ```

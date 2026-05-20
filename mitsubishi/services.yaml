@@ -8,6 +8,19 @@ set_options:
       required: true
       selector:
         text:
+    swing_mode:
+      name: Vertical swing
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "auto"
+            - "highest"
+            - "high"
+            - "middle"
+            - "low"
+            - "lowest"
     hswing_mode:
       name: Horizontal swing
       required: false
