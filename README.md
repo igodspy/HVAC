@@ -26,8 +26,8 @@ mitsubishi:
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, Allergen Clear, cleaning, powerful, economy.
 - Allergen Clear turns off locally after 90 minutes. Self cleaning turns off locally after 2 hours. These timer-based state updates do not send an IR command.
-- Powerful turns off locally after 15 minutes. Powerful is not available during dry mode and is canceled when the HVAC mode changes, 3D auto is enabled, silent is enabled, or night setback is enabled.
-- Economy is canceled when night setback is enabled or when the HVAC mode is changed from dry to fan only.
+- Powerful turns off locally after 15 minutes. Powerful is not available during dry and fan only modes and is canceled when the HVAC mode changes, 3D auto is enabled, silent is enabled, or night setback is enabled.
+- Economy is not available during fan only mode and is canceled when night setback is enabled.
 - Silent is not available during dry and fan only modes.
 - Self cleaning is not available after heat, fan only, sleep, and Allergen Clear operations. OFF timer is not modeled by this integration.
 - In case of SCM multi system, ALLERGEN CLEAR control function is invalid. In case of SCM multi system, if ALLERGEN button is pressed by mistake, the indoor unit which received such command stops.

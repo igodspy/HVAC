@@ -158,10 +158,7 @@ def _normalize_option_data(config_data, changed_data=None, previous_data=None):
         config_data[PAR_ECONOMY] = OPTION_OFF
     if changed_data.get(PAR_SLEEP) == OPTION_ON or changed_data.get(PAR_3D_AUTO) == OPTION_ON:
         config_data[PAR_POWERFUL] = OPTION_OFF
-    if (
-        previous_data.get(PAR_HVAC_MODE) == HVAC_MODE_DRY
-        and changed_data.get(PAR_HVAC_MODE) == HVAC_MODE_FAN_ONLY
-    ):
+    if config_data.get(PAR_HVAC_MODE) == HVAC_MODE_FAN_ONLY:
         config_data[PAR_ECONOMY] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]:
         config_data[PAR_QUIET] = OPTION_OFF
@@ -174,7 +171,7 @@ def _normalize_option_data(config_data, changed_data=None, previous_data=None):
     if changed_data.get(PAR_3D_AUTO) == OPTION_ON:
         config_data[PAR_SWING_MODE] = "auto"
         config_data[PAR_HSWING_MODE] = "auto"
-    if config_data.get(PAR_HVAC_MODE) == HVAC_MODE_DRY:
+    if config_data.get(PAR_HVAC_MODE) in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]:
         config_data[PAR_POWERFUL] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) in HVAC_MODES_WITHOUT_3D_AUTO:
         config_data[PAR_3D_AUTO] = OPTION_OFF
@@ -248,6 +245,7 @@ class MitsubishiHandler():
         self._remote_entity = remote_entity
         self._temperature_entity = temperature
         self._humidity_entity = humidity
+        self._option_entities = []
 
     @property
     def available(self):
@@ -418,7 +416,18 @@ class MitsubishiHandler():
             False,
         )
 
-    def set_data_json(self, parameter_list=None):
+    def register_option_entity(self, entity):
+        """Track option entities for immediate state refreshes."""
+        self._option_entities.append(entity)
+
+    def refresh_option_entities(self):
+        """Request Home Assistant state updates for option entities."""
+        for entity in self._option_entities:
+            refresh_state = getattr(entity, "_refresh_state", None)
+            if refresh_state is not None:
+                refresh_state()
+
+    def set_data_json(self, parameter_list=None, send_ir=True):
         """Set Mitsubishi data in json file"""
         if parameter_list is None:
             parameter_list = {}
@@ -462,6 +471,28 @@ class MitsubishiHandler():
                 parameter_list,
                 previous_config_data,
             )
+            unsupported_option_request = (
+                PAR_HVAC_MODE not in parameter_list
+                and (
+                    (
+                        parameter_list.get(PAR_ECONOMY) == OPTION_ON
+                        and self._config_data.get(PAR_HVAC_MODE)
+                        == HVAC_MODE_FAN_ONLY
+                    )
+                    or (
+                        parameter_list.get(PAR_POWERFUL) == OPTION_ON
+                        and self._config_data.get(PAR_HVAC_MODE)
+                        in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
+                    )
+                )
+            )
+            if unsupported_option_request:
+                if parameter_list.get(PAR_ECONOMY) == OPTION_ON:
+                    self._config_data[PAR_ECONOMY] = OPTION_OFF
+                if parameter_list.get(PAR_POWERFUL) == OPTION_ON:
+                    self._config_data[PAR_POWERFUL] = OPTION_OFF
+                    self._config_data.pop(PAR_POWERFUL_ENDS_AT, None)
+                send_ir = False
 
             if parameter_list.get(PAR_POWERFUL) == OPTION_ON:
                 if self._config_data.get(PAR_POWERFUL) == OPTION_ON:
@@ -497,13 +528,21 @@ class MitsubishiHandler():
 
             try:
                 ir_code = generate_broadlink_base64(self._config_data)
-                if (PAR_HVAC_MODE in parameter_list and self._config_data[PAR_HVAC_MODE] == HVAC_MODE_OFF) or self._config_data[PAR_HVAC_MODE] != HVAC_MODE_OFF:
+                if send_ir and (
+                    (
+                        PAR_HVAC_MODE in parameter_list
+                        and self._config_data[PAR_HVAC_MODE] == HVAC_MODE_OFF
+                    )
+                    or self._config_data[PAR_HVAC_MODE] != HVAC_MODE_OFF
+                ):
                     should_send = True
                 # store data
                 self._set_data_json()
                 _LOGGER.info("AC generated code {}".format(ir_code))
             except Exception as ex:
                 _LOGGER.error(f"Unknown IR code with exception: {ex}")
+
+        self.refresh_option_entities()
 
         if should_send:
             try:
