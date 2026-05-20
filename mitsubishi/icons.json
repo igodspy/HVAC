@@ -1,0 +1,30 @@
+{
+  "entity": {
+    "climate": {
+      "aircon": {
+        "default": "mdi:air-conditioner",
+        "state_attributes": {
+          "fan_mode": {
+            "default": "mdi:fan",
+            "state": {
+              "auto": "mdi:fan-auto",
+              "lowest": "mdi:fan-chevron-down",
+              "low": "mdi:fan-speed-1",
+              "medium": "mdi:fan-speed-2",
+              "high": "mdi:fan-speed-3",
+              "highest": "mdi:fan-chevron-up"
+            }
+          },
+          "preset_mode": {
+            "default": "mdi:tune-variant",
+            "state": {
+              "none": "mdi:close",
+              "powerful": "mdi:flash",
+              "economy": "mdi:leaf"
+            }
+          }
+        }
+      }
+    }
+  }
+}

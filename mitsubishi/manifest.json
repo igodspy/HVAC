@@ -1,0 +1,9 @@
+{
+  "domain": "mitsubishi",
+  "name": "Mitsubishi Aircon",
+  "documentation": "https://github.com/igodspy/HVAC",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@igodspy"],
+  "version": "1.0"
+}

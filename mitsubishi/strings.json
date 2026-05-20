@@ -1,0 +1,95 @@
+{
+  "entity": {
+    "climate": {
+      "aircon": {
+        "state_attributes": {
+          "fan_mode": {
+            "state": {
+              "auto": "Auto",
+              "lowest": "Lowest",
+              "low": "Low",
+              "medium": "Medium",
+              "high": "High",
+              "highest": "Highest"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "none": "None",
+              "powerful": "Powerful",
+              "economy": "Economy"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "hswing_mode": {
+        "name": "Horizontal swing",
+        "state": {
+          "auto": "Auto",
+          "wide": "Wide",
+          "far right": "Far right",
+          "right": "Right",
+          "middle": "Middle",
+          "left": "Left",
+          "far left": "Far left",
+          "off": "Off"
+        }
+      }
+    },
+    "switch": {
+      "quiet": {
+        "name": "Silent"
+      },
+      "sleep": {
+        "name": "Night Setback"
+      },
+      "purifier": {
+        "name": "Purifier"
+      },
+      "cleaning": {
+        "name": "Cleaning"
+      },
+      "powerful": {
+        "name": "Powerful"
+      },
+      "economy": {
+        "name": "Economy"
+      }
+    }
+  },
+  "services": {
+    "set_options": {
+      "name": "Set Mitsubishi options",
+      "description": "Set RLA502A700B options that are not exposed as standard climate controls.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Climate device name from configuration.yaml."
+        },
+        "hswing_mode": {
+          "name": "Horizontal swing"
+        },
+        "quiet": {
+          "name": "Silent"
+        },
+        "sleep": {
+          "name": "Night Setback"
+        },
+        "purifier": {
+          "name": "Purifier"
+        },
+        "cleaning": {
+          "name": "Cleaning"
+        },
+        "powerful": {
+          "name": "Powerful"
+        },
+        "economy": {
+          "name": "Economy"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+"""Constants for the Mitsubishi Heavy Industries RLA502A700B integration."""
+from homeassistant.components.climate.const import (
+    ClimateEntityFeature,
+    FAN_AUTO,
+    FAN_HIGH,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_OFF,
+    HVACMode,
+)
+from homeassistant.const import (
+    ATTR_TEMPERATURE,
+    CONF_NAME,
+    UnitOfTemperature,
+)
+
+TEMP_CELSIUS = UnitOfTemperature.CELSIUS
+
+CURRENT_HVAC_COOL = HVACMode.COOL
+CURRENT_HVAC_DRY = HVACMode.DRY
+CURRENT_HVAC_FAN = HVACMode.FAN_ONLY
+CURRENT_HVAC_HEAT = HVACMode.HEAT
+CURRENT_HVAC_OFF = HVACMode.OFF
+
+HVAC_MODE_AUTO = HVACMode.HEAT_COOL
+HVAC_MODE_COOL = HVACMode.COOL
+HVAC_MODE_DRY = HVACMode.DRY
+HVAC_MODE_FAN_ONLY = HVACMode.FAN_ONLY
+HVAC_MODE_HEAT = HVACMode.HEAT
+HVAC_MODE_HEAT_COOL = HVACMode.HEAT_COOL
+HVAC_MODE_OFF = HVACMode.OFF
+
+SUPPORT_TARGET_TEMPERATURE = ClimateEntityFeature.TARGET_TEMPERATURE
+SUPPORT_FAN_MODE = ClimateEntityFeature.FAN_MODE
+SUPPORT_SWING_MODE = ClimateEntityFeature.SWING_MODE
+SUPPORT_PRESET_MODE = ClimateEntityFeature.PRESET_MODE
+
+DOMAIN = "mitsubishi"
+DATA_MITSUBISHI = DOMAIN
+DEVICES = "devices"
+CLIMATES = "climates"
+
+HUMIDITY_ENTITY = "humidity_entity"
+TEMPERARURE_ENTITY = "temperature_entity"
+REMOTE_ENTITY = "remote_entity"
+
+CURRENT_HVAC_MAINTAINING = "maintaining"
+
+FAN_HIGHEST = "highest"
+FAN_LOWEST = "lowest"
+
+PAR_HVAC_MODE = "hvac_mode"
+PAR_FAN_MODE = "fan_mode"
+PAR_TEMPERATURE = "temperature"
+PAR_SWING_MODE = "swing_mode"
+PAR_HSWING_MODE = "hswing_mode"
+PAR_QUIET = "quiet"
+PAR_SLEEP = "sleep"
+PAR_PURIFIER = "purifier"
+PAR_CLEANING = "cleaning"
+PAR_POWERFUL = "powerful"
+PAR_ECONOMY = "economy"
+
+OPTION_PARAMETERS = [
+    PAR_SWING_MODE,
+    PAR_HSWING_MODE,
+    PAR_QUIET,
+    PAR_SLEEP,
+    PAR_PURIFIER,
+    PAR_CLEANING,
+    PAR_POWERFUL,
+    PAR_ECONOMY,
+]
+
+TEMP_MIN = 18
+TEMP_MAX = 30
+
+SUPPORTED_HVAC_MODES = [
+    HVAC_MODE_COOL,
+    HVAC_MODE_DRY,
+    HVAC_MODE_FAN_ONLY,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
+    HVAC_MODE_OFF,
+]
+SUPPORTED_FAN_MODES = [
+    FAN_AUTO,
+    FAN_LOWEST,
+    FAN_LOW,
+    FAN_MEDIUM,
+    FAN_HIGH,
+    FAN_HIGHEST,
+]
+SUPPORTED_SWING_MODES = ["off", "auto", "90", "60", "45", "30", "0"]
+SUPPORTED_HSWING_MODES = [
+    "auto",
+    "wide",
+    "far right",
+    "right",
+    "middle",
+    "left",
+    "far left",
+    "off",
+]
+
+OPTION_OFF = "off"
+OPTION_ON = "on"
+SUPPORTED_OPTION_VALUES = [OPTION_OFF, OPTION_ON]
+
+PRESET_NONE = "none"
+PRESET_QUIET = PAR_QUIET
+PRESET_SLEEP = PAR_SLEEP
+PRESET_PURIFIER = PAR_PURIFIER
+PRESET_CLEANING = PAR_CLEANING
+PRESET_POWERFUL = PAR_POWERFUL
+PRESET_ECONOMY = PAR_ECONOMY
+SUPPORTED_PRESET_MODES = [
+    PRESET_NONE,
+    PRESET_POWERFUL,
+    PRESET_ECONOMY,
+]
+
+STANDALONE_OPTION_PARAMETERS = [
+    PAR_SLEEP,
+    PAR_PURIFIER,
+    PAR_CLEANING,
+]
+
+CLIMATE_PRESET_PARAMETERS = [
+    PAR_POWERFUL,
+    PAR_ECONOMY,
+]
+
+SUPPORT_FLAGS = (
+    SUPPORT_FAN_MODE
+    | SUPPORT_TARGET_TEMPERATURE
+    | SUPPORT_SWING_MODE
+    | SUPPORT_PRESET_MODE
+)

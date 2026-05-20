@@ -1,0 +1,72 @@
+set_options:
+  name: Set Mitsubishi options
+  description: Set RLA502A700B options that are not exposed as standard climate controls.
+  fields:
+    name:
+      name: Name
+      description: Climate device name from configuration.yaml.
+      required: true
+      selector:
+        text:
+    hswing_mode:
+      name: Horizontal swing
+      required: false
+      selector:
+        select:
+          options:
+            - "auto"
+            - "wide"
+            - "far right"
+            - "right"
+            - "middle"
+            - "left"
+            - "far left"
+            - "off"
+    quiet:
+      name: Silent
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    sleep:
+      name: Night Setback
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    purifier:
+      name: Purifier
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    cleaning:
+      name: Cleaning
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    powerful:
+      name: Powerful
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    economy:
+      name: Economy
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
