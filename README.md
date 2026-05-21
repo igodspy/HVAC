@@ -33,7 +33,8 @@ mitsubishi:
 - Self cleaning is not available after heat, fan only, sleep, and Allergen Clear operations. OFF timer is not modeled by this integration.
 - In case of SCM multi system, ALLERGEN CLEAR control function is invalid. In case of SCM multi system, if ALLERGEN button is pressed by mistake, the indoor unit which received such command stops.
 
-Horizontal swing and individual options are exposed as Home Assistant entities:
+Swing modes and individual options are exposed as Home Assistant entities:
+- `select.<name>_swing_mode`
 - `select.<name>_horizontal_swing`
 - `select.<name>_install_position`
 - `switch.<name>_power`
@@ -60,8 +61,6 @@ cards:
     entity: climate.livingroom_cond
     name: Living Room
     features:
-      - style: dropdown
-        type: climate-swing-modes
       - style: icons
         type: climate-fan-modes
       - style: icons
@@ -79,6 +78,8 @@ cards:
   - type: entities
     title: Air conditioner options
     entities:
+      - entity: select.livingroom_cond_swing_mode
+        name: Vertical swing
       - entity: select.livingroom_cond_horizontal_swing
         name: Horizontal swing
       - entity: switch.mitsubishi_livingroom_cond_3d_auto
