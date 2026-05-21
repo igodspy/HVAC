@@ -57,6 +57,14 @@
           "far left": "Far left",
           "off": "Off"
         }
+      },
+      "install_position": {
+        "name": "Install position",
+        "state": {
+          "wall_on_the_left": "Wall on the left",
+          "center": "Center",
+          "wall_on_the_right": "Wall on the right"
+        }
       }
     },
     "switch": {
@@ -95,6 +103,10 @@
           "name": "Name",
           "description": "Climate device name from configuration.yaml."
         },
+        "entity_id": {
+          "name": "Entity",
+          "description": "Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond."
+        },
         "swing_mode": {
           "name": "Vertical swing"
         },
@@ -121,6 +133,23 @@
         },
         "3d_auto": {
           "name": "3D Auto"
+        }
+      }
+    },
+    "set_install_position": {
+      "name": "Set Mitsubishi install position",
+      "description": "Send the off-mode setup command for the indoor unit install position.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Climate device name from configuration.yaml."
+        },
+        "entity_id": {
+          "name": "Entity",
+          "description": "Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond."
+        },
+        "install_position": {
+          "name": "Install position"
         }
       }
     }

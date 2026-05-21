@@ -11,12 +11,13 @@ from homeassistant.components.climate import DOMAIN as CLIMATE
 from homeassistant.components.select import DOMAIN as SELECT
 from homeassistant.components.switch import DOMAIN as SWITCH
 from homeassistant.const import (
+    ATTR_ENTITY_ID,
     CONF_NAME,
 )
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers import discovery
 
-from .ir_generator import generate_broadlink_base64
+from .ir_generator import generate_broadlink_base64, generate_install_position_base64
 from .const import (
     CLIMATES,
     DATA_MITSUBISHI,
@@ -37,6 +38,7 @@ from .const import (
     PAR_POWERFUL_ENDS_AT,
     PAR_ECONOMY,
     PAR_3D_AUTO,
+    PAR_INSTALL_POSITION,
     OPTION_PARAMETERS,
     OPTION_OFF,
     OPTION_ON,
@@ -55,6 +57,7 @@ from .const import (
     SUPPORTED_FAN_MODES,
     SUPPORTED_SWING_MODES,
     SUPPORTED_HSWING_MODES,
+    SUPPORTED_INSTALL_POSITIONS,
     SUPPORTED_OPTION_VALUES,
     TEMP_MIN,
     TEMP_MAX,
@@ -80,6 +83,7 @@ DEFAULT_HVAC_MODE = HVAC_MODE_OFF
 DEFAULT_FAN_MODE = FAN_AUTO
 DEFAULT_SWING_MODE = "off"
 DEFAULT_HSWING_MODE = "auto"
+DEFAULT_INSTALL_POSITION = "center"
 HVAC_MODES_WITHOUT_3D_AUTO = [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
 CLEANING_DURATION = timedelta(hours=2)
 PURIFIER_DURATION = timedelta(minutes=90)
@@ -216,7 +220,8 @@ CONFIG_SCHEMA = vol.Schema(
 
 SET_OPTIONS_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_NAME): cv.string,
+        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+        vol.Optional(CONF_NAME): cv.string,
         vol.Optional(PAR_SWING_MODE): vol.In(
             SUPPORTED_SWING_MODES + list(SWING_MODE_ALIASES)
         ),
@@ -230,6 +235,42 @@ SET_OPTIONS_SCHEMA = vol.Schema(
         vol.Optional(PAR_3D_AUTO): vol.In(SUPPORTED_OPTION_VALUES),
     }
 )
+
+SET_INSTALL_POSITION_SCHEMA = vol.Schema(
+    {
+        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+        vol.Optional(CONF_NAME): cv.string,
+        vol.Required(PAR_INSTALL_POSITION): vol.In(SUPPORTED_INSTALL_POSITIONS),
+    }
+)
+
+
+def _service_schema(schema):
+    def validate(value):
+        value = schema(value)
+        if ATTR_ENTITY_ID not in value and CONF_NAME not in value:
+            raise vol.Invalid("entity_id or name is required")
+        return value
+
+    return validate
+
+
+def _get_service_device(hass, service_data):
+    devices = hass.data[DATA_MITSUBISHI][DEVICES]
+    if CONF_NAME in service_data:
+        device = devices.get(service_data[CONF_NAME])
+        if device is not None:
+            return device
+
+    entity_ids = service_data.get(ATTR_ENTITY_ID)
+    if isinstance(entity_ids, str):
+        entity_ids = [entity_ids]
+    if entity_ids:
+        for device in devices.values():
+            if device.api.has_entity_id(entity_ids):
+                return device
+    return None
+
 
 class MitsubishiHandler():
     """Mitsubishi handler"""
@@ -310,6 +351,17 @@ class MitsubishiHandler():
                 self._config_data[PAR_HSWING_MODE] = DEFAULT_HSWING_MODE
                 must_reset = True
 
+            if (
+                PAR_INSTALL_POSITION in read_data
+                and read_data[PAR_INSTALL_POSITION] in SUPPORTED_INSTALL_POSITIONS
+            ):
+                self._config_data[PAR_INSTALL_POSITION] = copy.deepcopy(
+                    read_data[PAR_INSTALL_POSITION]
+                )
+            else:
+                self._config_data[PAR_INSTALL_POSITION] = DEFAULT_INSTALL_POSITION
+                must_reset = True
+
             for parameter in [
                 PAR_QUIET,
                 PAR_SLEEP,
@@ -375,6 +427,7 @@ class MitsubishiHandler():
             self._config_data[PAR_FAN_MODE] = DEFAULT_FAN_MODE
             self._config_data[PAR_SWING_MODE] = DEFAULT_SWING_MODE
             self._config_data[PAR_HSWING_MODE] = DEFAULT_HSWING_MODE
+            self._config_data[PAR_INSTALL_POSITION] = DEFAULT_INSTALL_POSITION
             for parameter in OPTION_PARAMETERS:
                 if parameter not in [PAR_SWING_MODE, PAR_HSWING_MODE]:
                     self._config_data[parameter] = OPTION_OFF
@@ -442,6 +495,14 @@ class MitsubishiHandler():
                     update_state(force_refresh=True)
                 except TypeError:
                     update_state()
+
+    def has_entity_id(self, entity_ids):
+        """Return True when one of this device's entities matches an entity ID."""
+        entity_ids = set(entity_ids)
+        return any(
+            getattr(entity, "entity_id", None) in entity_ids
+            for entity in self._entities
+        )
 
     def set_data_json(self, parameter_list=None, send_ir=True):
         """Set Mitsubishi data in json file"""
@@ -566,6 +627,32 @@ class MitsubishiHandler():
             except Exception as ex:
                 _LOGGER.error("Failed to schedule IR command: %s", ex)
 
+    def set_install_position(self, position):
+        """Send and store the indoor unit install position setup command."""
+        if position not in SUPPORTED_INSTALL_POSITIONS:
+            return
+        ir_code = None
+        with self._lock:
+            self._read_data_json()
+            self._config_data[PAR_INSTALL_POSITION] = copy.deepcopy(position)
+            try:
+                ir_code = generate_install_position_base64(position)
+                self._set_data_json()
+                _LOGGER.info("AC generated install position code %s", ir_code)
+            except Exception as ex:
+                _LOGGER.error(
+                    "Unknown install position IR code with exception: %s",
+                    ex,
+                )
+
+        self.refresh_entities()
+
+        if ir_code is not None:
+            try:
+                self._send_ir_code(ir_code)
+            except Exception as ex:
+                _LOGGER.error("Failed to schedule install position IR command: %s", ex)
+
 def setup(hass, config):
     """Set up the Mitsubishi component."""
     hass.data.setdefault(DATA_MITSUBISHI, {DEVICES: {}, CLIMATES: []})
@@ -598,10 +685,9 @@ def setup(hass, config):
             config)
 
     def set_options(call):
-        name = call.data[CONF_NAME]
-        device = hass.data[DATA_MITSUBISHI][DEVICES].get(name)
+        device = _get_service_device(hass, call.data)
         if device is None:
-            _LOGGER.error("Unknown Mitsubishi device %s", name)
+            _LOGGER.error("Unknown Mitsubishi device for service data %s", call.data)
             return
         device.api.set_data_json(
             {
@@ -615,7 +701,21 @@ def setup(hass, config):
         DOMAIN,
         "set_options",
         set_options,
-        schema=SET_OPTIONS_SCHEMA,
+        schema=_service_schema(SET_OPTIONS_SCHEMA),
+    )
+
+    def set_install_position(call):
+        device = _get_service_device(hass, call.data)
+        if device is None:
+            _LOGGER.error("Unknown Mitsubishi device for service data %s", call.data)
+            return
+        device.api.set_install_position(call.data[PAR_INSTALL_POSITION])
+
+    hass.services.register(
+        DOMAIN,
+        "set_install_position",
+        set_install_position,
+        schema=_service_schema(SET_INSTALL_POSITION_SCHEMA),
     )
 
     if not hass.data[DATA_MITSUBISHI][DEVICES]:

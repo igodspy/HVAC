@@ -5,9 +5,16 @@ set_options:
     name:
       name: Name
       description: Climate device name from configuration.yaml.
-      required: true
+      required: false
       selector:
         text:
+    entity_id:
+      name: Entity
+      description: Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond.
+      required: false
+      selector:
+        entity:
+          integration: mitsubishi
     swing_mode:
       name: Vertical swing
       required: false
@@ -91,3 +98,29 @@ set_options:
           options:
             - "off"
             - "on"
+set_install_position:
+  name: Set Mitsubishi install position
+  description: Send the off-mode setup command for the indoor unit install position.
+  fields:
+    name:
+      name: Name
+      description: Climate device name from configuration.yaml.
+      required: false
+      selector:
+        text:
+    entity_id:
+      name: Entity
+      description: Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond.
+      required: false
+      selector:
+        entity:
+          integration: mitsubishi
+    install_position:
+      name: Install position
+      required: true
+      selector:
+        select:
+          options:
+            - "wall_on_the_left"
+            - "center"
+            - "wall_on_the_right"

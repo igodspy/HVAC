@@ -1,0 +1,33 @@
+type: vertical-stack
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: button
+        name: Wall on the left
+        icon: mdi:wall
+        tap_action:
+          action: call-service
+          service: mitsubishi.set_install_position
+          data:
+            entity_id: climate.kabinet_cond
+            install_position: "wall_on_the_left"
+
+      - type: button
+        name: Center
+        icon: mdi:format-align-center
+        tap_action:
+          action: call-service
+          service: mitsubishi.set_install_position
+          data:
+            entity_id: climate.kabinet_cond
+            install_position: "center"
+
+      - type: button
+        name: Wall on the right
+        icon: mdi:wall
+        tap_action:
+          action: call-service
+          service: mitsubishi.set_install_position
+          data:
+            entity_id: climate.kabinet_cond
+            install_position: "wall_on_the_right"

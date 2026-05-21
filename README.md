@@ -23,6 +23,7 @@ mitsubishi:
 - Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
 - Presets: quiet, sleep, Allergen Clear (`purifier`), cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
 - Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
+- Install position setup command: wall_on_the_left, center, wall_on_the_right. This is sent as a separate off-mode setup command.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, Allergen Clear, cleaning, powerful, economy.
 - Allergen Clear turns off locally after 90 minutes. Self cleaning turns off locally after 2 hours. These timer-based state updates do not send an IR command.
@@ -34,6 +35,7 @@ mitsubishi:
 
 Horizontal swing and individual options are exposed as Home Assistant entities:
 - `select.<name>_horizontal_swing`
+- `select.<name>_install_position`
 - `switch.<name>_power`
 - `switch.<name>_quiet`
 - `switch.<name>_sleep`
@@ -92,6 +94,8 @@ cards:
     show_header_toggle: false
 ```
 
+See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.
+
 ### Configuration saving possible issues
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
 It might happen that due to not found folder `json` configuration shall not be saved. To solve it, simply create `json` folder under `/config/custom_components/mitsubishi` and set rights for everyone to be able to modify contents of this folder. After first request to change data files with corresponding friendly names shall be created.
@@ -114,9 +118,27 @@ mitsubishi:
 ```
 service: mitsubishi.set_options
 data:
-  name: "Living Room"
+  entity_id: climate.livingroom_cond
   hswing_mode: "middle"
   quiet: "on"
+```
+
+### Install position setup service example
+Send this while the indoor unit is off.
+```
+service: mitsubishi.set_install_position
+data:
+  entity_id: climate.livingroom_cond
+  install_position: "wall_on_the_left"
+```
+
+or control it via lovelace card
+```
+type: entities
+title: Mitsubishi install position
+entities:
+  - entity: select.mitsubishi_livingroom_install_position
+    name: Current install position
 ```
 
 ### Afternote

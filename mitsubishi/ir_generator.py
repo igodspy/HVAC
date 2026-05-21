@@ -23,6 +23,9 @@ from .const import (
     HVAC_MODE_HEAT,
     HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
+    INSTALL_POSITION_CENTER,
+    INSTALL_POSITION_WALL_ON_THE_LEFT,
+    INSTALL_POSITION_WALL_ON_THE_RIGHT,
     OPTION_ON,
     PAR_3D_AUTO,
     PAR_CLEANING,
@@ -42,6 +45,13 @@ from .const import (
 
 STATE_LENGTH = 19
 SIGNATURE = [0xAD, 0x51, 0x3C, 0xE5, 0x1A]
+TEMP_ENCODING_OFFSET = 17
+
+INSTALL_POSITION_MAP = {
+    INSTALL_POSITION_CENTER: 0xA0,
+    INSTALL_POSITION_WALL_ON_THE_RIGHT: 0xC0,
+    INSTALL_POSITION_WALL_ON_THE_LEFT: 0xE0,
+}
 
 MODE_MAP = {
     HVAC_MODE_HEAT_COOL: 0,
@@ -102,6 +112,14 @@ def generate_broadlink_base64(config):
     return base64.b64encode(packet).decode("ascii")
 
 
+def generate_install_position_base64(position):
+    """Return a Broadlink base64 command for the indoor unit install position."""
+    raw = _build_install_position_state(position)
+    pulses = _to_lirc(raw)
+    packet = _to_broadlink_packet(pulses)
+    return base64.b64encode(packet).decode("ascii")
+
+
 def _build_state(config):
     state = bytearray(STATE_LENGTH)
     state[: len(SIGNATURE)] = bytes(SIGNATURE)
@@ -134,7 +152,7 @@ def _build_state(config):
     elif config.get(PAR_PURIFIER) == OPTION_ON:
         state[5] |= 1 << 6
 
-    state[7] = (temperature - TEMP_MIN) & 0x0F
+    state[7] = (temperature - TEMP_ENCODING_OFFSET) & 0x0F
     state[9] = fan & 0x0F
     state[11] = (swing & 0x07) << 5
     if (
@@ -148,6 +166,18 @@ def _build_state(config):
         state[15] |= 1 << 6
     if config.get(PAR_QUIET) == OPTION_ON:
         state[15] |= 1 << 7
+
+    _invert_byte_pairs(state)
+    return state
+
+
+def _build_install_position_state(position):
+    state = bytearray(STATE_LENGTH)
+    state[: len(SIGNATURE)] = bytes(SIGNATURE)
+    state[5] = 0x01
+    state[7] = 0x07
+    state[9] = 0x01
+    state[17] = INSTALL_POSITION_MAP[position]
 
     _invert_byte_pairs(state)
     return state
