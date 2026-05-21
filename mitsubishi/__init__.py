@@ -172,20 +172,9 @@ def _normalize_option_data(config_data, changed_data=None, previous_data=None):
         or config_data.get(PAR_PURIFIER) == OPTION_ON
     ):
         config_data[PAR_CLEANING] = OPTION_OFF
-    if changed_data.get(PAR_3D_AUTO) == OPTION_ON:
-        config_data[PAR_SWING_MODE] = "auto"
-        config_data[PAR_HSWING_MODE] = "auto"
     if config_data.get(PAR_HVAC_MODE) in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]:
         config_data[PAR_POWERFUL] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) in HVAC_MODES_WITHOUT_3D_AUTO:
-        config_data[PAR_3D_AUTO] = OPTION_OFF
-    if (
-        config_data.get(PAR_3D_AUTO) == OPTION_ON
-        and (
-            config_data.get(PAR_SWING_MODE) != "auto"
-            or config_data.get(PAR_HSWING_MODE) != "auto"
-        )
-    ):
         config_data[PAR_3D_AUTO] = OPTION_OFF
 
     standalone_enabled = any(config_data.get(parameter) == OPTION_ON for parameter in STANDALONE_OPTION_PARAMETERS)

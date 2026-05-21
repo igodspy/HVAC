@@ -161,6 +161,7 @@ SUPPORTED_SWING_MODES = [
     SWING_MODE_LOWEST,
 ]
 SUPPORTED_HSWING_MODES = [
+    "off",
     "auto",
     "wide",
     "far right",
@@ -168,7 +169,6 @@ SUPPORTED_HSWING_MODES = [
     "middle",
     "left",
     "far left",
-    "off",
 ]
 INSTALL_POSITION_WALL_ON_THE_LEFT = "wall_on_the_left"
 INSTALL_POSITION_CENTER = "center"

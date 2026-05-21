@@ -34,6 +34,7 @@ set_options:
       selector:
         select:
           options:
+            - "off"
             - "auto"
             - "wide"
             - "far right"
@@ -41,7 +42,6 @@ set_options:
             - "middle"
             - "left"
             - "far left"
-            - "off"
     quiet:
       name: Silent
       required: false

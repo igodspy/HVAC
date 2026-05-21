@@ -22,7 +22,7 @@ mitsubishi:
 - Fan: auto, lowest, low, medium, high, highest.
 - Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
 - Presets: quiet, sleep, Allergen Clear (`purifier`), cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
-- Horizontal swing: auto, wide, far right, right, middle, left, far left, off.
+- Horizontal swing: off, auto, wide, far right, right, middle, left, far left.
 - Install position setup command: wall_on_the_left, center, wall_on_the_right. This is sent as a separate off-mode setup command.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
 - Individual option switches: quiet, sleep, Allergen Clear, cleaning, powerful, economy.

@@ -4,7 +4,7 @@ card:
   cards:
     - type: thermostat
       entity: climate.livingroom_cond
-      name: Гостиная
+      name: Living Room
       features:
         - type: climate-hvac-modes
           hvac_modes:
