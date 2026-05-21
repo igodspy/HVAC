@@ -1,80 +1,146 @@
-type: vertical-stack
-cards:
-  - type: thermostat
-    entity: climate.livingroom_cond
-    name: Living Room
-    features:
-      - style: dropdown
-        type: climate-swing-modes
-      - style: icons
-        type: climate-fan-modes
-      - style: icons
-        type: climate-preset-modes
-      - type: climate-hvac-modes
-        hvac_modes:
-          - "off"
-          - cool
-          - heat
-          - dry
-          - fan_only
-          - heat_cool
-    card_mod:
-      style: |
-        ha-card {
-          position: relative;
-          overflow: hidden;
-        }
+type: custom:mod-card
+card:
+  type: vertical-stack
+  cards:
+    - type: thermostat
+      entity: climate.livingroom_cond
+      name: Гостиная
+      features:
+        - type: climate-hvac-modes
+          hvac_modes:
+            - "off"
+            - cool
+            - heat
+            - dry
+            - fan_only
+            - heat_cool
+        - style: icons
+          type: climate-preset-modes
+        - style: icons
+          type: climate-fan-modes
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none;
+            border: none;
+            background: transparent;
+          }
+    - type: custom:mushroom-select-card
+      entity: select.mitsubishi_livingroom_cond_swing_mode
+      name: Vertical swings
+      icon: mdi:arrow-up-down
+      fill_container: false
+      layout: horizontal
+      primary_info: name
+      secondary_info: none
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none;
+            border: none;
+            background: transparent;
+          --card-mod-icon-color:
+            {% if not is_state('climate.livingroom_cond', 'off') %}
+              var(--blue-color)
+            {% else %}
+              var(--state-icon-color)
+            {% endif %};
+          }
+    - type: custom:mushroom-select-card
+      entity: select.livingroom_cond_horizontal_swing
+      name: Horizontal swings
+      icon: mdi:arrow-left-right
+      fill_container: false
+      layout: horizontal
+      primary_info: name
+      secondary_info: none
+      card_mod:
+        style: |
+          ha-card {
+            box-shadow: none;
+            border: none;
+            background: transparent;
+          --card-mod-icon-color:
+            {% if not is_state('climate.livingroom_cond', 'off') %}
+              var(--blue-color)
+            {% else %}
+              var(--state-icon-color)
+            {% endif %};
+          }
+    - square: false
+      type: grid
+      columns: 3
+      cards:
+        - type: tile
+          entity: switch.mitsubishi_livingroom_cond_3d_auto
+          name: 3D auto
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
+        - type: tile
+          entity: switch.livingroom_cond_quiet
+          name: Silent
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
+        - type: tile
+          entity: switch.livingroom_cond_cleaning
+          name: Selfcleaning
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
+card_mod:
+  style: |
+    ha-card {
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+      border-radius: var(--ha-card-border-radius, 12px);
+      background: var(--ha-card-background, var(--card-background-color));
+    }
 
-        ha-card:before {
-          content: "";
-          display: {% if states('select.mitsubishi_livingroom_cond_install_position') in ['wall_on_the_left', 'center'] %}block{% else %}none{% endif %};
-          position: absolute;
-          left: 0;
-          top: 12px;
-          bottom: 12px;
-          width: 3px;
-          border-radius: 0 4px 4px 0;
-          background: grey;
-          opacity: 0.7;
-          z-index: 2;
-        }
+    ha-card:before {
+      content: "";
+      display: {% if states('select.mitsubishi_livingroom_cond_install_position') in ['wall_on_the_left', 'center'] %}block{% else %}none{% endif %};
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 0 4px 4px 0;
+      background: #343434;
+      opacity: 0.7;
+      z-index: 2;
+    }
 
-        ha-card:after {
-          content: "";
-          display: {% if states('select.mitsubishi_livingroom_cond_install_position') in ['wall_on_the_right', 'center'] %}block{% else %}none{% endif %};
-          position: absolute;
-          right: 0;
-          top: 12px;
-          bottom: 12px;
-          width: 3px;
-          border-radius: 4px 0 0 4px;
-          background: grey;
-          opacity: 0.7;
-          z-index: 2;
-        }
-  - type: custom:mushroom-select-card
-    entity: select.livingroom_cond_horizontal_swing
-    name: Horizontal swings
-    icon: ""
-    fill_container: false
-    layout: horizontal
-    primary_info: name
-    secondary_info: none
-  - square: false
-    type: grid
-    cards:
-      - type: tile
-        entity: switch.mitsubishi_livingroom_cond_3d_auto
-        name: 3D auto
-        tap_action:
-          action: toggle
-      - type: tile
-        entity: switch.livingroom_cond_quiet
-        name: Silent
-        tap_action:
-          action: toggle
-      - type: tile
-        entity: switch.livingroom_cond_cleaning
-        name: Selfcleaning
-        tap_action:
-          action: toggle
+    ha-card:after {
+      content: "";
+      display: {% if states('select.mitsubishi_livingroom_cond_install_position') in ['wall_on_the_right', 'center'] %}block{% else %}none{% endif %};
+      position: absolute;
+      right: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 4px 0 0 4px;
+      background: #343434;
+      opacity: 0.7;
+      z-index: 2;
+    }

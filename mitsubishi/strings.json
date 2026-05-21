@@ -45,6 +45,18 @@
       }
     },
     "select": {
+      "swing_mode": {
+        "name": "Vertical swing",
+        "state": {
+          "off": "Off",
+          "auto": "Auto",
+          "highest": "Highest",
+          "high": "High",
+          "middle": "Middle",
+          "low": "Low",
+          "lowest": "Lowest"
+        }
+      },
       "hswing_mode": {
         "name": "Horizontal swing",
         "state": {
