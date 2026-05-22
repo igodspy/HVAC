@@ -21,7 +21,7 @@ mitsubishi:
 - Temperature: 18-30 C.
 - Fan: auto, lowest, low, medium, high, highest.
 - Vertical swing: off, auto, highest, high, middle, low, lowest. Legacy numeric values 90, 60, 45, 30, 0 are still accepted.
-- Presets: quiet, sleep, Allergen Clear (`purifier`), cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry and fan only modes.
+- Presets: quiet, sleep, Allergen Clear (`purifier`), cleaning, powerful, economy, 3D auto. 3D auto is disabled in dry, fan only, powerful, and economy modes.
 - Horizontal swing: off, auto, wide, far right, right, middle, left, far left.
 - Install position setup command: wall_on_the_left, center, wall_on_the_right. This is sent as a separate off-mode setup command.
 - Main power switch: turns off with HVAC mode `off`; turns on with HVAC mode `cool`.
@@ -48,8 +48,18 @@ Swing modes and individual options are exposed as Home Assistant entities:
 
 The `mitsubishi.set_options` service is still available for existing automations.
 
+### Entity labels and icons
+Entity labels, select option labels, and icons are configured in `mitsubishi/entity_config.json`.
+This file is the main place to customize how Mitsubishi entities and modes are shown in Home Assistant.
+
+The integration synchronizes Home Assistant metadata from `entity_config.json` on startup:
+- `icons.json` is regenerated when configured icons are changed.
+- The entity section of `strings.json` is regenerated when configured English labels are changed.
+
+After changing `entity_config.json`, restart Home Assistant or reload the custom integration. If the UI still shows old icons or labels, clear the Home Assistant frontend cache or reload the browser page.
+
 ### Yandex Smart Home mode mapping
-Home Assistant keeps the full set of Mitsubishi controls. For Yandex Smart Home, map unsupported values in `entity_config` so Yandex receives only common mode names and does not show fallback labels like numbers.
+Home Assistant keeps the full set of Mitsubishi controls. For Yandex Smart Home, map unsupported values in `configuration.yaml` so Yandex receives only common mode names and does not show fallback labels like numbers.
 
 See `yandex_smart_home.example.yaml` for a ready example. Replace `climate.livingroom_cond` with your climate entity ID.
 

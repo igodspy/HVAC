@@ -21,27 +21,42 @@ set_options:
       selector:
         select:
           options:
-            - "off"
-            - "auto"
-            - "highest"
-            - "high"
-            - "middle"
-            - "low"
-            - "lowest"
+            - label: "Off"
+              value: "off"
+            - label: "Auto"
+              value: "auto"
+            - label: "Highest"
+              value: "highest"
+            - label: "High"
+              value: "high"
+            - label: "Middle"
+              value: "middle"
+            - label: "Low"
+              value: "low"
+            - label: "Lowest"
+              value: "lowest"
     hswing_mode:
       name: Horizontal swing
       required: false
       selector:
         select:
           options:
-            - "off"
-            - "auto"
-            - "wide"
-            - "far right"
-            - "right"
-            - "middle"
-            - "left"
-            - "far left"
+            - label: "Off"
+              value: "off"
+            - label: "Auto"
+              value: "auto"
+            - label: "Wide"
+              value: "wide"
+            - label: "Far right"
+              value: "far right"
+            - label: "Right"
+              value: "right"
+            - label: "Middle"
+              value: "middle"
+            - label: "Left"
+              value: "left"
+            - label: "Far left"
+              value: "far left"
     quiet:
       name: Silent
       required: false
@@ -121,6 +136,9 @@ set_install_position:
       selector:
         select:
           options:
-            - "wall_on_the_left"
-            - "center"
-            - "wall_on_the_right"
+            - label: "Wall on the left"
+              value: "wall_on_the_left"
+            - label: "Center"
+              value: "center"
+            - label: "Wall on the right"
+              value: "wall_on_the_right"

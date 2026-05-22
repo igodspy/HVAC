@@ -4,6 +4,11 @@ import logging
 
 from homeassistant.components.switch import SwitchEntity
 
+from .entity_config import (
+    POWER_SWITCH_KEY,
+    get_entity_icon,
+    get_option_switch_keys,
+)
 from .const import (
     CONF_NAME,
     DATA_MITSUBISHI,
@@ -31,16 +36,6 @@ _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(seconds=STATE_SCAN_INTERVAL_SECS)
 
-OPTION_SWITCHES = {
-    PAR_QUIET: ("Silent", "mdi:volume-low"),
-    PAR_SLEEP: ("Night Setback", "mdi:sleep"),
-    PAR_PURIFIER: ("Allergen Clear", "mdi:allergy"),
-    PAR_CLEANING: ("Cleaning", "mdi:spray-bottle"),
-    PAR_POWERFUL: ("Powerful", "mdi:flash"),
-    PAR_ECONOMY: ("Economy", "mdi:leaf"),
-    PAR_3D_AUTO: ("3D Auto", "mdi:axis-arrow"),
-}
-
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Mitsubishi switch platform."""
@@ -52,8 +47,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     add_entities(
         [MitsubishiPowerSwitch(name, device)]
         + [
-            MitsubishiOptionSwitch(name, device, parameter, icon)
-            for parameter, (_, icon) in OPTION_SWITCHES.items()
+            MitsubishiOptionSwitch(name, device, parameter)
+            for parameter in get_option_switch_keys()
         ]
     )
 
@@ -67,13 +62,13 @@ class MitsubishiPowerSwitch(SwitchEntity):
         self._api = device.api
         self._attr_has_entity_name = True
         self._attr_name = None
-        self._attr_translation_key = "power"
+        self._attr_translation_key = POWER_SWITCH_KEY
         self._api.register_entity(self)
 
     @property
     def unique_id(self) -> str:
         """Return the unique ID for this switch."""
-        return "_".join([self._name, "power"])
+        return "_".join([self._name, POWER_SWITCH_KEY])
 
     @property
     def device_info(self):
@@ -88,7 +83,7 @@ class MitsubishiPowerSwitch(SwitchEntity):
     @property
     def icon(self):
         """Return the icon for this switch."""
-        return "mdi:power"
+        return get_entity_icon("switch", POWER_SWITCH_KEY)
 
     @property
     def available(self):
@@ -134,12 +129,11 @@ class MitsubishiPowerSwitch(SwitchEntity):
 class MitsubishiOptionSwitch(SwitchEntity):
     """Switch for a Mitsubishi AC on/off option."""
 
-    def __init__(self, name, device, parameter, icon):
+    def __init__(self, name, device, parameter):
         """Initialize the switch entity."""
         self._name = name
         self._api = device.api
         self._parameter = parameter
-        self._icon = icon
         self._attr_has_entity_name = True
         self._attr_name = None
         self._attr_translation_key = parameter
@@ -164,7 +158,7 @@ class MitsubishiOptionSwitch(SwitchEntity):
     @property
     def icon(self):
         """Return the icon for this switch."""
-        return self._icon
+        return get_entity_icon("switch", self._parameter)
 
     @property
     def available(self):

@@ -6,6 +6,7 @@ import logging
 
 from homeassistant.components.climate import ClimateEntity
 
+from .entity_config import get_entity_icon
 from .const import (
     CURRENT_HVAC_COOL,
     CURRENT_HVAC_DRY,
@@ -92,7 +93,7 @@ class MitsubishiThermostat(ClimateEntity):
     @property
     def icon(self):
         """Return the name of the Climate device."""
-        return "mdi:air-conditioner"
+        return get_entity_icon("climate", "aircon")
     
     @property
     def name(self):

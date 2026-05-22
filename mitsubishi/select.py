@@ -4,6 +4,7 @@ import logging
 
 from homeassistant.components.select import SelectEntity
 
+from .entity_config import get_entity_icon
 from .const import (
     CONF_NAME,
     DATA_MITSUBISHI,
@@ -71,7 +72,7 @@ class MitsubishiVerticalSwingSelect(SelectEntity):
     @property
     def icon(self):
         """Return the icon for this select."""
-        return "mdi:arrow-up-down"
+        return get_entity_icon("select", PAR_SWING_MODE)
 
     @property
     def available(self):
@@ -139,7 +140,7 @@ class MitsubishiHorizontalSwingSelect(SelectEntity):
     @property
     def icon(self):
         """Return the icon for this select."""
-        return "mdi:arrow-left-right"
+        return get_entity_icon("select", PAR_HSWING_MODE)
 
     @property
     def available(self):
@@ -206,7 +207,7 @@ class MitsubishiInstallPositionSelect(SelectEntity):
     @property
     def icon(self):
         """Return the icon for this select."""
-        return "mdi:wall"
+        return get_entity_icon("select", PAR_INSTALL_POSITION)
 
     @property
     def available(self):

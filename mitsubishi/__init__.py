@@ -17,6 +17,7 @@ from homeassistant.const import (
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers import discovery
 
+from .entity_config import sync_icons_config, sync_strings_config
 from .ir_generator import generate_broadlink_base64, generate_install_position_base64
 from .const import (
     CLIMATES,
@@ -156,12 +157,17 @@ def _normalize_option_data(config_data, changed_data=None, previous_data=None):
     if changed_data.get(PAR_POWERFUL) == OPTION_ON:
         config_data[PAR_ECONOMY] = OPTION_OFF
         config_data[PAR_QUIET] = OPTION_OFF
+        config_data[PAR_3D_AUTO] = OPTION_OFF
     if changed_data.get(PAR_ECONOMY) == OPTION_ON or changed_data.get(PAR_QUIET) == OPTION_ON:
         config_data[PAR_POWERFUL] = OPTION_OFF
+    if changed_data.get(PAR_ECONOMY) == OPTION_ON:
+        config_data[PAR_3D_AUTO] = OPTION_OFF
     if changed_data.get(PAR_SLEEP) == OPTION_ON:
         config_data[PAR_ECONOMY] = OPTION_OFF
     if changed_data.get(PAR_SLEEP) == OPTION_ON or changed_data.get(PAR_3D_AUTO) == OPTION_ON:
         config_data[PAR_POWERFUL] = OPTION_OFF
+    if changed_data.get(PAR_3D_AUTO) == OPTION_ON:
+        config_data[PAR_ECONOMY] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) == HVAC_MODE_FAN_ONLY:
         config_data[PAR_ECONOMY] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]:
@@ -175,6 +181,14 @@ def _normalize_option_data(config_data, changed_data=None, previous_data=None):
     if config_data.get(PAR_HVAC_MODE) in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]:
         config_data[PAR_POWERFUL] = OPTION_OFF
     if config_data.get(PAR_HVAC_MODE) in HVAC_MODES_WITHOUT_3D_AUTO:
+        config_data[PAR_3D_AUTO] = OPTION_OFF
+    if (
+        config_data.get(PAR_3D_AUTO) == OPTION_ON
+        and (
+            config_data.get(PAR_POWERFUL) == OPTION_ON
+            or config_data.get(PAR_ECONOMY) == OPTION_ON
+        )
+    ):
         config_data[PAR_3D_AUTO] = OPTION_OFF
 
     standalone_enabled = any(config_data.get(parameter) == OPTION_ON for parameter in STANDALONE_OPTION_PARAMETERS)
@@ -644,6 +658,8 @@ class MitsubishiHandler():
 
 def setup(hass, config):
     """Set up the Mitsubishi component."""
+    sync_icons_config()
+    sync_strings_config()
     hass.data.setdefault(DATA_MITSUBISHI, {DEVICES: {}, CLIMATES: []})
     for device in config[DOMAIN]:
         name = device[CONF_NAME]

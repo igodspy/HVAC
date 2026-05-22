@@ -158,6 +158,8 @@ def _build_state(config):
     if (
         config.get(PAR_3D_AUTO) == OPTION_ON
         and mode not in [HVAC_MODE_DRY, HVAC_MODE_FAN_ONLY]
+        and config.get(PAR_POWERFUL) != OPTION_ON
+        and config.get(PAR_ECONOMY) != OPTION_ON
     ):
         state[11] |= 0x12
     state[13] = hswing & 0x0F
