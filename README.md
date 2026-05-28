@@ -3,8 +3,9 @@ A small Home Assistant custom component for Mitsubishi Heavy Industries ACs cont
 
 
 ### Lovelace card with card-mod and mushroom
+See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.<br/>
 <img width="300" alt="AC_Living_Room" src="https://github.com/user-attachments/assets/635db69b-9c18-49db-83b0-1ae256553286" />
-See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.
+
 
 ### Installation
 Copy folder `mitsubishi` to `/config/custom_components`. 
