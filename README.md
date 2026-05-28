@@ -1,6 +1,9 @@
 ## Control of Mitsubishi Heavy Industries RLA502A700B via Broadlink IR for Home Assistant
 A small Home Assistant custom component for Mitsubishi Heavy Industries ACs controlled by the RLA502A700B remote. IR commands are generated on demand and sent through an existing Home Assistant `remote` entity.
 
+
+### Lovelace card with card-mod and mushroom
+See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.
 <img width="300" alt="AC_Living_Room" src="https://github.com/user-attachments/assets/635db69b-9c18-49db-83b0-1ae256553286" />
 
 ### Installation
@@ -106,8 +109,6 @@ cards:
         name: Self cleaning
     show_header_toggle: false
 ```
-
-See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.
 
 ### Configuration saving possible issues
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
