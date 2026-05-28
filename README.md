@@ -1,7 +1,7 @@
 ## Control of Mitsubishi Heavy Industries RLA502A700B via Broadlink IR for Home Assistant
 A small Home Assistant custom component for Mitsubishi Heavy Industries ACs controlled by the RLA502A700B remote. IR commands are generated on demand and sent through an existing Home Assistant `remote` entity.
 
-<img width="519" height="743" alt="AC_Living_Room" src="https://github.com/user-attachments/assets/635db69b-9c18-49db-83b0-1ae256553286" />
+<img width="300" alt="AC_Living_Room" src="https://github.com/user-attachments/assets/635db69b-9c18-49db-83b0-1ae256553286" />
 
 ### Installation
 Copy folder `mitsubishi` to `/config/custom_components`. 
