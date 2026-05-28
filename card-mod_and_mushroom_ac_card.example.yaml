@@ -25,6 +25,46 @@ card:
             border: none;
             background: transparent;
           }
+    - square: false
+      type: grid
+      columns: 3
+      cards:
+        - type: tile
+          entity: switch.mitsubishi_livingroom_cond_3d_auto
+          name: 3D auto
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
+        - type: tile
+          entity: switch.livingroom_cond_quiet
+          name: Silent
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
+        - type: tile
+          entity: switch.livingroom_cond_cleaning
+          name: Selfcleaning
+          tap_action:
+            action: toggle
+          card_mod:
+            style: |
+              ha-card {
+                box-shadow: none;
+                border: none;
+                background: transparent;
+              }
     - type: custom:mushroom-select-card
       entity: select.mitsubishi_livingroom_cond_swing_mode
       name: Vertical swings
@@ -67,46 +107,6 @@ card:
               var(--state-icon-color)
             {% endif %};
           }
-    - square: false
-      type: grid
-      columns: 3
-      cards:
-        - type: tile
-          entity: switch.mitsubishi_livingroom_cond_3d_auto
-          name: 3D auto
-          tap_action:
-            action: toggle
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-                border: none;
-                background: transparent;
-              }
-        - type: tile
-          entity: switch.livingroom_cond_quiet
-          name: Silent
-          tap_action:
-            action: toggle
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-                border: none;
-                background: transparent;
-              }
-        - type: tile
-          entity: switch.livingroom_cond_cleaning
-          name: Selfcleaning
-          tap_action:
-            action: toggle
-          card_mod:
-            style: |
-              ha-card {
-                box-shadow: none;
-                border: none;
-                background: transparent;
-              }
 card_mod:
   style: |
     ha-card {
