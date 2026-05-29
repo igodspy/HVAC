@@ -1,26 +1,27 @@
-
 ## Control of Mitsubishi Heavy Industries RLA502A700B via Broadlink IR for Home Assistant
 A small Home Assistant custom component for Mitsubishi Heavy Industries ACs controlled by the RLA502A700B remote. IR commands are generated on demand and sent through an existing Home Assistant `remote` entity.
 
-
-### Lovelace card with card-mod and mushroom
-<img width="900" alt="AC" src="https://github.com/user-attachments/assets/810b6829-5e69-4e3f-a65c-1b67e00b5ac3" /><br/>
-See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.<br/>
-
 ### Installation
-Copy folder `mitsubishi` to `/config/custom_components`. 
-Include following in `configuration.yaml`:
-```
-mitsubishi:
-  - remote_entity: remote.living_room_broadlink
-    name: "Living Room"
-```
+#### HACS
+1. Open HACS in Home Assistant.
+2. Add `https://github.com/igodspy/HVAC` as a custom repository with category `Integration`.
+3. Install **Mitsubishi Aircon** from HACS.
+4. Restart Home Assistant.
 
-### Configuration attributes
-- `remote_entity` - **mandatory** Home Assistant remote entity used to send Broadlink commands.
-- `name` - friendly name.
-- `temperature_entity` - separate unrelated temperature sensor entity, which will be used as part of climate entity (for observability in google home for example). For example if you have xiaomi bluetooth sensor in the room where AC is located, then measured temperature will be also visible in newly created climate entity as part of AC and will be accessible from google.
-- `humidity_entity` - separate unrelated humidity sensor entity, which will be used as part of climate entity (for observability in google home for example). For example if you have xiaomi bluetooth sensor in the room where AC is located, then measured humidity will be also visible in newly created climate entity as part of AC and will be accessible from google.
+#### Manual
+Copy folder `custom_components/mitsubishi` into `/config/custom_components/`.
+Restart Home Assistant, then add an AC from **Settings -> Devices & services -> Mitsubishi Aircon -> Add AC**.
+
+The setup flow asks for:
+- `Remote` - mandatory Home Assistant remote entity used to send Broadlink commands.
+- `Temperature sensor` - optional separate sensor entity used as the current temperature in the climate entity.
+- `Humidity sensor` - optional separate sensor entity used as the current humidity in the climate entity.
+- `Name` - optional friendly name. By default it uses `AC <room name>` when a room is known.
+- `Room` - optional Home Assistant area. It is prefilled from the selected Remote when available.
+
+### YAML configuration
+Adding ACs through the UI is preferred. Existing `configuration.yaml` entries are still supported for compatibility.
+YAML-configured ACs are imported into Devices & services automatically, and their room is inherited from the configured `remote_entity` when available.
 
 ### Supported controls
 - HVAC mode: off, heat, cool, dry, fan only, auto.
@@ -55,7 +56,7 @@ Swing modes and individual options are exposed as Home Assistant entities:
 The `mitsubishi.set_options` service is still available for existing automations.
 
 ### Entity labels and icons
-Entity labels, select option labels, and icons are configured in `mitsubishi/entity_config.json`.
+Entity labels, select option labels, and icons are configured in `custom_components/mitsubishi/entity_config.json`.
 This file is the main place to customize how Mitsubishi entities and modes are shown in Home Assistant.
 
 The integration synchronizes Home Assistant metadata from `entity_config.json` on startup:
@@ -111,12 +112,14 @@ cards:
     show_header_toggle: false
 ```
 
+See `card-mod_and_mushroom_ac_card.example.yaml` for an example with card-mod and mushroom mods installed for wall installation indicators and better select entities.
+
 ### Configuration saving possible issues
 Integration saves wanted configuration in JSON file located under `/config/custom_components/mitsubishi/json/` so no need to use input_select or input_number entities. 
 It might happen that due to not found folder `json` configuration shall not be saved. To solve it, simply create `json` folder under `/config/custom_components/mitsubishi` and set rights for everyone to be able to modify contents of this folder. After first request to change data files with corresponding friendly names shall be created.
 Examples of JSON files are included in `json` folder in this repository.
 
-### configuration.yaml entry example
+### Legacy configuration.yaml entry example
 ```
 mitsubishi:
   - remote_entity: remote.living_room_broadlink
@@ -147,7 +150,7 @@ data:
   install_position: "wall_on_the_left"
 ```
 
-or control it via lovelace card
+Or control it via lovelace card.
 ```
 type: entities
 title: Mitsubishi install position

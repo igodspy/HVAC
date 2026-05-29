@@ -1,0 +1,12 @@
+{
+  "domain": "mitsubishi",
+  "name": "Mitsubishi Aircon",
+  "documentation": "https://github.com/igodspy/HVAC",
+  "issue_tracker": "https://github.com/igodspy/HVAC/issues",
+  "requirements": [],
+  "dependencies": [],
+  "config_flow": true,
+  "integration_type": "device",
+  "codeowners": ["@igodspy"],
+  "version": "1.0"
+}

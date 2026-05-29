@@ -1,0 +1,209 @@
+{
+  "config": {
+    "flow_title": "Add AC",
+    "step": {
+      "user": {
+        "title": "Add AC",
+        "description": "Choose the remote used to send IR commands. Temperature and humidity sensors are optional.",
+        "data": {
+          "remote_entity": "Remote",
+          "temperature_entity": "Temperature sensor",
+          "humidity_entity": "Humidity sensor"
+        }
+      },
+      "details": {
+        "title": "AC details",
+        "description": "Optionally set a name and room. The room is prefilled from the selected remote when available.",
+        "data": {
+          "name": "Name",
+          "area_id": "Room"
+        }
+      }
+    },
+    "error": {
+      "name_exists": "This name is already used by another Mitsubishi AC."
+    },
+    "abort": {
+      "already_configured": "This remote is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AC sensors",
+        "description": "Choose or replace the sensors shown by this AC.",
+        "data": {
+          "temperature_entity": "Temperature sensor",
+          "humidity_entity": "Humidity sensor"
+        }
+      }
+    }
+  },
+  "entity": {
+    "climate": {
+      "aircon": {
+        "state_attributes": {
+          "hvac_mode": {
+            "state": {
+              "off": "Off",
+              "heat_cool": "Auto",
+              "cool": "Cool",
+              "dry": "Dry",
+              "fan_only": "Fan",
+              "heat": "Heat"
+            }
+          },
+          "fan_mode": {
+            "state": {
+              "auto": "Auto",
+              "lowest": "Lowest",
+              "low": "Low",
+              "medium": "Medium",
+              "high": "High",
+              "highest": "Highest"
+            }
+          },
+          "swing_mode": {
+            "state": {
+              "off": "Off",
+              "auto": "Auto",
+              "highest": "Highest",
+              "high": "High",
+              "middle": "Middle",
+              "low": "Low",
+              "lowest": "Lowest"
+            }
+          },
+          "preset_mode": {
+            "state": {
+              "none": "None",
+              "powerful": "Powerful",
+              "economy": "Economy"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "swing_mode": {
+        "name": "Vertical swing",
+        "state": {
+          "off": "Off",
+          "auto": "Auto",
+          "highest": "Highest",
+          "high": "High",
+          "middle": "Middle",
+          "low": "Low",
+          "lowest": "Lowest"
+        }
+      },
+      "hswing_mode": {
+        "name": "Horizontal swing",
+        "state": {
+          "auto": "Auto",
+          "wide": "Wide",
+          "far right": "Far right",
+          "right": "Right",
+          "middle": "Middle",
+          "left": "Left",
+          "far left": "Far left",
+          "off": "Off"
+        }
+      },
+      "install_position": {
+        "name": "Install position",
+        "state": {
+          "wall_on_the_left": "Wall on the left",
+          "center": "Center",
+          "wall_on_the_right": "Wall on the right"
+        }
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "quiet": {
+        "name": "Silent"
+      },
+      "sleep": {
+        "name": "Night Setback"
+      },
+      "purifier": {
+        "name": "Allergen Clear"
+      },
+      "cleaning": {
+        "name": "Cleaning"
+      },
+      "powerful": {
+        "name": "Powerful"
+      },
+      "economy": {
+        "name": "Economy"
+      },
+      "3d_auto": {
+        "name": "3D Auto"
+      }
+    }
+  },
+  "services": {
+    "set_options": {
+      "name": "Set Mitsubishi options",
+      "description": "Set RLA502A700B options that are not exposed as standard climate controls.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Configured Mitsubishi climate device name."
+        },
+        "entity_id": {
+          "name": "Entity",
+          "description": "Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond."
+        },
+        "swing_mode": {
+          "name": "Vertical swing"
+        },
+        "hswing_mode": {
+          "name": "Horizontal swing"
+        },
+        "quiet": {
+          "name": "Silent"
+        },
+        "sleep": {
+          "name": "Night Setback"
+        },
+        "purifier": {
+          "name": "Allergen Clear"
+        },
+        "cleaning": {
+          "name": "Cleaning"
+        },
+        "powerful": {
+          "name": "Powerful"
+        },
+        "economy": {
+          "name": "Economy"
+        },
+        "3d_auto": {
+          "name": "3D Auto"
+        }
+      }
+    },
+    "set_install_position": {
+      "name": "Set Mitsubishi install position",
+      "description": "Send the off-mode setup command for the indoor unit install position.",
+      "fields": {
+        "name": {
+          "name": "Name",
+          "description": "Configured Mitsubishi climate device name."
+        },
+        "entity_id": {
+          "name": "Entity",
+          "description": "Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond."
+        },
+        "install_position": {
+          "name": "Install position"
+        }
+      }
+    }
+  }
+}

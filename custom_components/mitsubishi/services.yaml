@@ -1,0 +1,144 @@
+set_options:
+  name: Set Mitsubishi options
+  description: Set RLA502A700B options that are not exposed as standard climate controls.
+  fields:
+    name:
+      name: Name
+      description: Configured Mitsubishi climate device name.
+      required: false
+      selector:
+        text:
+    entity_id:
+      name: Entity
+      description: Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond.
+      required: false
+      selector:
+        entity:
+          integration: mitsubishi
+    swing_mode:
+      name: Vertical swing
+      required: false
+      selector:
+        select:
+          options:
+            - label: "Off"
+              value: "off"
+            - label: "Auto"
+              value: "auto"
+            - label: "Highest"
+              value: "highest"
+            - label: "High"
+              value: "high"
+            - label: "Middle"
+              value: "middle"
+            - label: "Low"
+              value: "low"
+            - label: "Lowest"
+              value: "lowest"
+    hswing_mode:
+      name: Horizontal swing
+      required: false
+      selector:
+        select:
+          options:
+            - label: "Off"
+              value: "off"
+            - label: "Auto"
+              value: "auto"
+            - label: "Wide"
+              value: "wide"
+            - label: "Far right"
+              value: "far right"
+            - label: "Right"
+              value: "right"
+            - label: "Middle"
+              value: "middle"
+            - label: "Left"
+              value: "left"
+            - label: "Far left"
+              value: "far left"
+    quiet:
+      name: Silent
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    sleep:
+      name: Night Setback
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    purifier:
+      name: Allergen Clear
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    cleaning:
+      name: Cleaning
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    powerful:
+      name: Powerful
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    economy:
+      name: Economy
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+    3d_auto:
+      name: 3D Auto
+      required: false
+      selector:
+        select:
+          options:
+            - "off"
+            - "on"
+set_install_position:
+  name: Set Mitsubishi install position
+  description: Send the off-mode setup command for the indoor unit install position.
+  fields:
+    name:
+      name: Name
+      description: Configured Mitsubishi climate device name.
+      required: false
+      selector:
+        text:
+    entity_id:
+      name: Entity
+      description: Any entity that belongs to the Mitsubishi device, for example climate.kabinet_cond.
+      required: false
+      selector:
+        entity:
+          integration: mitsubishi
+    install_position:
+      name: Install position
+      required: true
+      selector:
+        select:
+          options:
+            - label: "Wall on the left"
+              value: "wall_on_the_left"
+            - label: "Center"
+              value: "center"
+            - label: "Wall on the right"
+              value: "wall_on_the_right"

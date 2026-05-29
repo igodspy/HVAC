@@ -1,0 +1,42 @@
+{
+  "config": {
+    "flow_title": "Add AC",
+    "step": {
+      "user": {
+        "title": "Add AC",
+        "description": "Choose the remote used to send IR commands. Temperature and humidity sensors are optional.",
+        "data": {
+          "remote_entity": "Remote",
+          "temperature_entity": "Temperature sensor",
+          "humidity_entity": "Humidity sensor"
+        }
+      },
+      "details": {
+        "title": "AC details",
+        "description": "Optionally set a name and room. The room is prefilled from the selected remote when available.",
+        "data": {
+          "name": "Name",
+          "area_id": "Room"
+        }
+      }
+    },
+    "error": {
+      "name_exists": "This name is already used by another Mitsubishi AC."
+    },
+    "abort": {
+      "already_configured": "This remote is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AC sensors",
+        "description": "Choose or replace the sensors shown by this AC.",
+        "data": {
+          "temperature_entity": "Temperature sensor",
+          "humidity_entity": "Humidity sensor"
+        }
+      }
+    }
+  }
+}
